@@ -5,7 +5,7 @@ import { FloatingFooter } from "@/components/floating-footer";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#FDFBF7] relative overflow-x-hidden">
+    <main className="min-h-screen bg-background relative overflow-x-hidden">
       <Navbar />
       <Hero />
       <BentoGrid />

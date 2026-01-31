@@ -1,5 +1,7 @@
 import { ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { DiagonalLink } from "@/components/ui/diagonal-link";
 
 export function Navbar() {
   const navLinks = [
@@ -20,24 +22,24 @@ export function Navbar() {
       {/* Center Links */}
       <div className="hidden md:flex gap-8 items-center -ml-15 font-raleway">
         {navLinks.map((link) => (
-          <Link 
+          <DiagonalLink 
             key={link.name} 
             href={link.href}
-            className="text-serenya-dark text-sm font-medium hover:text-serenya-green transition-colors"
+            className="text-serenya-dark text-sm font-medium"
           >
             {link.name}
-          </Link>
+          </DiagonalLink>
         ))}
       </div>
 
       {/* Right Icons */}
       <div className="flex gap-4 items-center">
-         <button className="w-10 h-10 rounded-full bg-serenya-green text-white flex items-center justify-center hover:bg-serenya-primary transition-colors shadow-[0_0_15px_rgba(55,139,46,0.5)] hover:shadow-[0_0_20px_rgba(55,139,46,0.7)]">
+         <Button size="icon" variant="serenya" className="rounded-full shadow-lg hover:shadow-xl transition-all">
             <ShoppingBag className="w-4 h-4" />
-         </button>
-         <button className="w-10 h-10 rounded-full bg-serenya-green text-white flex items-center justify-center hover:bg-serenya-primary transition-colors shadow-[0_0_15px_rgba(55,139,46,0.5)] hover:shadow-[0_0_20px_rgba(55,139,46,0.7)]">
+         </Button>
+         <Button size="icon" variant="serenya" className="rounded-full shadow-lg hover:shadow-xl transition-all">
             <User className="w-4 h-4" />
-         </button>
+         </Button>
       </div>
     </nav>
   );
