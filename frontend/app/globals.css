@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-hatolie: var(--font-hatolie-new);
+  --font-raleway: var(--font-raleway-new), sans-serif;
+  
+  /* Serenya Palette */
+  --color-serenya-bg: #EAECE6;        /* Light Beige/Greenish */
+  --color-serenya-green: #378B2E;     /* Vibrant Green Text */
+  --color-serenya-dark: #1A301D;      /* Dark Forest Green */
+  --color-serenya-primary: #5AB352;   /* Main Green Button/Accent */
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --background: #EAECE6;
+  --foreground: #1A301D;
+  --radius: 0.625rem;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
