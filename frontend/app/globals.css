@@ -7,6 +7,7 @@
   --font-mono: var(--font-geist-mono);
   --font-hatolie: var(--font-hatolie-new);
   --font-raleway: var(--font-raleway-new), sans-serif;
+  --font-star: var(--font-star-new);
   
   /* Serenya Palette */
   --color-serenya-bg: #EAECE6;        /* Light Beige/Greenish */

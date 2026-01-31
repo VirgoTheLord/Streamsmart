@@ -43,6 +43,8 @@ export function Hero() {
                 </div>
             ))}
          </div>
+
+
          {/* Typography */}
          <div className="text-left z-10 w-full max-w-3xl font-hatolie pl-6">
              <div className="relative inline-block">

@@ -13,6 +13,11 @@ const hatolie = localFont({
   variable: "--font-hatolie-new",
 });
 
+const star = localFont({
+  src: "./fonts/Starjedi.ttf",
+  variable: "--font-star-new",
+});
+
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -36,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${hatolie.variable} ${raleway.variable}  antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${hatolie.variable} ${raleway.variable} ${star.variable}  antialiased`}
       >
         {children}
       </body>
