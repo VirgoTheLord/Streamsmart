@@ -2,6 +2,7 @@ import { ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DiagonalLink } from "@/components/ui/diagonal-link";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function Navbar() {
   const navLinks = [
@@ -16,7 +17,7 @@ export function Navbar() {
       {/* Brand */}
       <div className="flex items-center gap-2">
         
-        <span className="text-3xl font-medium tracking-wider text-serenya-dark font-star">StreamSmart</span>
+        <span className="text-3xl font-medium tracking-wider text-serenya-dark dark:text-white font-star">StreamSmart</span>
       </div>
 
       {/* Center Links */}
@@ -25,7 +26,7 @@ export function Navbar() {
           <DiagonalLink 
             key={link.name} 
             href={link.href}
-            className="text-serenya-dark text-sm font-medium"
+            className="text-serenya-dark dark:text-white dark:hover:text-serenya-accent transition-colors text-sm font-medium"
           >
             {link.name}
           </DiagonalLink>
@@ -34,10 +35,11 @@ export function Navbar() {
 
       {/* Right Icons */}
       <div className="flex gap-4 items-center">
-         <Button size="icon" variant="serenya" className="rounded-full shadow-lg hover:shadow-xl transition-all">
+         <ModeToggle />
+         <Button size="icon" variant="serenya" className="rounded-full shadow-lg hover:shadow-xl transition-all dark:bg-serenya-dark/20 dark:text-white dark:hover:bg-serenya-dark/40">
             <ShoppingBag className="w-4 h-4" />
          </Button>
-         <Button size="icon" variant="serenya" className="rounded-full shadow-lg hover:shadow-xl transition-all">
+         <Button size="icon" variant="serenya" className="rounded-full shadow-lg hover:shadow-xl transition-all dark:bg-serenya-dark/20 dark:text-white dark:hover:bg-serenya-dark/40">
             <User className="w-4 h-4" />
          </Button>
       </div>

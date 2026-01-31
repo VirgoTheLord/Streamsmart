@@ -19,11 +19,11 @@ export function Hero() {
 
         <div className="absolute bottom-4 left-4 flex gap-4">
 
-            <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <Pause className="w-5 h-5 text-serenya-dark" fill="currentColor" />
+            <button className="w-12 h-12 bg-white dark:bg-serenya-bg rounded-full flex items-center justify-center shadow-lg">
+                <Pause className="w-5 h-5 text-serenya-dark dark:text-white" fill="currentColor" />
             </button>
-            <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <VolumeX className="w-5 h-5 text-serenya-dark" />
+            <button className="w-12 h-12 bg-white dark:bg-serenya-bg rounded-full flex items-center justify-center shadow-lg">
+                <VolumeX className="w-5 h-5 text-serenya-dark dark:text-white" />
             </button>
         </div>
 
@@ -41,22 +41,22 @@ export function Hero() {
              
 
              <div className="text-left w-full font-hatolie pl-6">
-                 <h1 className="text-6xl md:text-[7rem] leading-[0.9] tracking-wide text-serenya-dark font-medium">
+                 <h1 className="text-6xl md:text-[7rem] leading-[0.9] tracking-wide text-serenya-dark dark:text-white font-medium">
                      Where <span className="text-serenya-primary font-black">Streaming</span>
                  </h1>
-                 <h1 className="text-6xl md:text-[7rem] leading-[0.9] tracking-wide text-serenya-dark font-medium">
+                 <h1 className="text-6xl md:text-[7rem] leading-[0.9] tracking-wide text-serenya-dark dark:text-white font-medium">
                      Meets <span className="text-serenya-primary font-black">Intelligence.</span>
                  </h1>
              </div>
 
 
              <div className="w-full max-w-2xl font-raleway">
-                 <div className="relative bg-white border border-serenya-accent/20 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 p-4">
+                 <div className="relative bg-white dark:bg-serenya-bg/10 border border-serenya-accent/20 dark:border-serenya-accent/10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 p-4 backdrop-blur-sm">
                      
 
                      <Textarea 
                         placeholder="Ask anything..." 
-                        className="w-full bg-transparent border-none outline-none text-lg text-serenya-dark placeholder:text-serenya-dark/50 resize-none h-[60px] p-2 font-medium shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[60px]"
+                        className="w-full bg-transparent border-none outline-none text-md text-serenya-dark dark:text-white placeholder:text-serenya-dark/50 dark:placeholder:text-white/50 resize-none h-[60px] p-2 font-medium shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[60px]"
                      />
 
 
@@ -64,21 +64,21 @@ export function Hero() {
                         
 
                         <div className="flex items-center gap-2">
-                             <Button variant="outline" size="sm" className="rounded-full text-serenya-dark/60 hover:text-serenya-dark border-serenya-dark/10 bg-serenya-bg/30 h-8 gap-2 px-3">
+                             <Button variant="outline" size="sm" className="rounded-full text-serenya-dark/60 hover:text-serenya-dark border-serenya-dark/10 bg-serenya-bg/30 h-8 gap-2 px-3 dark:text-white/60 dark:hover:text-white dark:border-white/10 dark:bg-white/5">
                                  <Search className="w-4 h-4" />
                                  <span>Focus</span>
                              </Button>
-                             <Button variant="ghost" size="icon" className="rounded-full text-serenya-dark/40 hover:text-serenya-dark hover:bg-serenya-bg/50 h-8 w-8">
+                             <Button variant="ghost" size="icon" className="rounded-full text-serenya-dark/40 hover:text-serenya-dark hover:bg-serenya-bg/50 h-8 w-8 dark:text-white/40 dark:hover:text-white dark:hover:bg-white/10">
                                 <Globe className="w-5 h-5" />
                              </Button>
                         </div>
 
 
                         <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" className="text-serenya-dark/40 hover:text-serenya-dark hover:bg-serenya-bg/50 rounded-full h-9 w-9">
+                            <Button variant="ghost" size="icon" className="text-serenya-dark/40 hover:text-serenya-dark hover:bg-serenya-bg/50 rounded-full h-9 w-9 dark:text-white/40 dark:hover:text-white dark:hover:bg-white/10">
                                 <Paperclip className="w-5 h-5" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="text-serenya-dark/40 hover:text-serenya-dark hover:bg-serenya-bg/50 rounded-full h-9 w-9">
+                            <Button variant="ghost" size="icon" className="text-serenya-dark/40 hover:text-serenya-dark hover:bg-serenya-bg/50 rounded-full h-9 w-9 dark:text-white/40 dark:hover:text-white dark:hover:bg-white/10">
                                 <Mic className="w-5 h-5" />
                             </Button>
                             <Button variant="default" size="icon" className="group rounded-full h-9 w-9 bg-serenya-accent hover:bg-serenya-primary shadow-sm">
@@ -94,7 +94,7 @@ export function Hero() {
                             key={pill} 
                             variant="secondary"
                             size="sm"
-                            className="rounded-lg bg-white/60 border border-serenya-dark/5 text-serenya-dark/60 hover:text-serenya-dark hover:bg-white hover:border-serenya-dark/20 transition-all cursor-pointer h-7 text-xs font-medium"
+                            className="rounded-lg bg-white/60 dark:bg-serenya-bg/20 border border-serenya-dark/5 text-serenya-dark/60 hover:text-serenya-dark hover:bg-white dark:hover:bg-serenya-bg/40 hover:border-serenya-dark/20 transition-all cursor-pointer h-7 text-xs font-medium dark:text-white/70 dark:hover:text-white"
                         >
                             <span className="opacity-50 mr-1.5">❖</span>
                             {pill}
