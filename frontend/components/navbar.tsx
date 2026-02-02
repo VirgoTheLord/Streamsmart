@@ -26,7 +26,7 @@ export function Navbar() {
           <DiagonalLink 
             key={link.name} 
             href={link.href}
-            className="text-serenya-dark dark:text-white dark:hover:text-serenya-accent transition-colors text-sm font-medium"
+            className="text-serenya-dark dark:text-white transition-colors text-sm font-medium"
           >
             {link.name}
           </DiagonalLink>

@@ -9,17 +9,12 @@ export function FloatingFooter() {
         
 
         <div 
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[150%] bg-serenya-primary/5 dark:bg-serenya-accent/10 blur-[80px] rounded-full pointer-events-none" 
-            style={{ background: 'radial-gradient(circle, rgba(73,136,196,0.1) 0%, rgba(15,40,84,0) 70%)' }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[150%] blur-[80px] rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(73,136,196,0.15)_0%,rgba(15,40,84,0)_70%)] dark:bg-[radial-gradient(circle,rgba(73,136,196,0.3)_0%,rgba(15,40,84,0)_70%)]" 
         />
         
 
         <div 
-            className="absolute -bottom-[50px] left-1/2 -translate-x-1/2 w-[800px] h-[200px] rounded-full pointer-events-none opacity-40 mix-blend-screen dark:mix-blend-multiply"
-            style={{ 
-                background: 'radial-gradient(circle, rgba(189,232,245,0.3) 0%, rgba(73,136,196,0.1) 40%, transparent 70%)',
-                filter: 'blur(40px)'
-            }}
+            className="absolute -bottom-[50px] left-1/2 -translate-x-1/2 w-[800px] h-[200px] rounded-full pointer-events-none opacity-40 mix-blend-screen dark:mix-blend-normal blur-[40px] bg-[radial-gradient(circle,rgba(189,232,245,0.3)_0%,rgba(73,136,196,0.1)_40%,transparent_70%)] dark:bg-[radial-gradient(circle,rgba(73,136,196,0.4)_0%,rgba(28,77,141,0.2)_40%,transparent_70%)]"
         />
 
 

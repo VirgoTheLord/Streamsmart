@@ -82,7 +82,7 @@ export function DiagonalLink({ href, children, className }: DiagonalLinkProps) {
       </span>
       
       {/* Replacement Text Container (Absolute) */}
-      <span className="absolute top-0 left-0 inline-flex overflow-hidden text-serenya-primary">
+      <span className="absolute top-0 left-0 inline-flex overflow-hidden text-serenya-primary dark:text-serenya-accent">
         {chars.map((char, i) => (
           <span key={i} className="char-replacement inline-block relative translate-y-full">
             {char === " " ? "\u00A0" : char}

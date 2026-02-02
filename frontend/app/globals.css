@@ -26,13 +26,11 @@
   --background: #f7fbff;
   --foreground: #0F2854;
   --radius: 0.625rem;
-  --bg-image: url('/5.png');
 }
 
 .dark {
   --background: #020817; /* Very dark blue/black for OLED feel */
   --foreground: #f7fbff;
-  --bg-image: url('/5dark.png');
   
   /* Serenya Dark Mode Overrides */
   --color-serenya-bg: #0F2854;        
