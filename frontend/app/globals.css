@@ -45,3 +45,11 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   overflow-x: hidden;
 }
+
+@layer base{
+  html,
+  body {
+    overscroll-behavior-y: none;
+    height: 100%;
+  }
+}

@@ -1,81 +1,90 @@
 "use client";
 
-import { Search, Globe, Paperclip, Mic, ArrowRight, Moon, Sun, User } from "lucide-react";
+import { Search, Globe, Paperclip, Mic, ArrowRight, Moon, Sun, User, Infinity, ChevronRight, Play, Disc, AudioWaveform, Sparkles } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { DiagonalLink } from "@/components/ui/diagonal-link";
 
 export function Hero() {
   return (
-    <div className="h-[100dvh] bg-white dark:bg-[#020817] text-serenya-dark dark:text-white overflow-hidden flex flex-col">
-      {/* Top Decorative Bar */}
-      <div className="w-full bg-serenya-dark dark:bg-serenya-primary h-2 relative flex-shrink-0">
-        <div className="absolute right-0 top-0 bottom-0 flex">
-          {Array.from({ length: 100 }).map((_, i) => (
-            <div key={i} className={`w-[2px] h-full ${i % 2 === 0 ? 'bg-white dark:bg-serenya-bg' : 'bg-serenya-dark dark:bg-serenya-primary'}`} />
-          ))}
-        </div>
-      </div>
-
-      {/* Header Section */}
-      <header className="px-6 pt-4 pb-2 flex-shrink-0">
-        <div className="w-full">
-          <div className="flex justify-between items-start">
-            {/* Left Column - EST and Mission */}
-            <div className="flex flex-col gap-4">
-              <div className="text-[10px] font-light tracking-wide">
-                EST <span className="mx-2">―――</span> 2024
-              </div>
-              <div className="text-[9px] leading-relaxed font-light max-w-[120px]">
-                Intelligent streaming<br />platform
-              </div>
-              <div className="text-[8px] leading-relaxed text-serenya-dark/60 dark:text-white/60 max-w-[120px]">
-                Our mission is<br />
-                transforming how you<br />
-                discover and enjoy<br />
-                content
-              </div>
+    <div className="h-[100dvh] bg-white dark:bg-[#020817] text-serenya-dark dark:text-white overflow-hidden flex flex-col font-sans transition-colors duration-300">
+      
+      {/* --- NEW HEADER (Barcode Style) --- */}
+      <header className="w-full flex-shrink-0 relative bg-white dark:bg-black text-black dark:text-white border-b border-black/5 dark:border-white/10">
+        {/* Top Decorative Bar */}
+        <div className="w-full h-4 flex">
+            {/* Left side empty/white */}
+            <div className="hidden md:block w-[45%] bg-transparent"></div>
+            
+            {/* Right side black with barcode pattern */}
+            <div className="w-full md:w-[60%] bg-black dark:bg-white flex items-center overflow-hidden relative">
+                <div className="flex items-center justify-end w-full h-full pr-4 gap-[2px]">
+                    {/* Barcode lines */}
+                    {Array.from({ length: 80 }).map((_, i) => (
+                        <div 
+                            key={i} 
+                            className={`h-full bg-white/90 dark:bg-black/90 ${
+                                i % 3 === 0 ? 'w-[1px]' : i % 2 === 0 ? 'w-[3px]' : 'w-[6px]'
+                            } ${i % 5 === 0 ? 'opacity-50' : 'opacity-100'}`} 
+                        />
+                    ))}
+                </div>
             </div>
+        </div>
 
-            {/* Right Column - Search, Navigation, Theme Toggle, Profile */}
-            <div className="flex flex-col items-end gap-1">
-              
-              <div className="flex items-center gap-3">
-                {/* Expandable Search */}
-                <div className="group relative">
-                  <div className="flex items-center overflow-hidden transition-all duration-300 w-4 group-hover:w-32">
-                    <Search className="w-3.5 h-3.5 flex-shrink-0 cursor-pointer" />
-                    <input 
-                      type="text" 
-                      placeholder="Search..." 
-                      className="ml-2 bg-transparent border-none outline-none text-[10px] w-0 group-hover:w-full transition-all duration-300 placeholder:text-current/50"
-                    />
-                  </div>
+        {/* Header Content Grid */}
+        <div className="px-6 py-8 md:px-10 md:py-4 w-full max-w-[1600px] mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                
+                {/* Column 1: Meta Info (EST, Mission) */}
+                <div className="md:col-span-3 font-mono text-xs flex flex-col gap-8 text-black dark:text-white/90">
+                    <div className="flex items-center gap-4 tracking-widest">
+                        <span>EST</span>
+                        <span className="h-[1px] w-12 bg-current"></span>
+                        <span>2010</span>
+                    </div>
+                    
+                    <div className="leading-relaxed">
+                        Unique streaming<br />
+                        and intelligence shop
+                    </div>
+
+                    <div className="opacity-60 leading-relaxed max-w-[150px]">
+                        Our mission is<br />
+                        preserving long-term<br />
+                        knowledge retrieval<br />
+                        traditions
+                    </div>
                 </div>
 
-                <nav className="flex items-center gap-3">
-                  <DiagonalLink href="#" className="text-[10px] font-light tracking-wide">SHOP</DiagonalLink>
-                  <DiagonalLink href="#" className="text-[10px] font-light tracking-wide">GALLERY</DiagonalLink>
-                  <DiagonalLink href="#" className="text-[10px] font-light tracking-wide">PHILOSOPHY</DiagonalLink>
-                  <DiagonalLink href="#" className="text-[10px] font-light tracking-wide">CONTACTS</DiagonalLink>
-                </nav>
+                {/* Column 2: Scribble (Visual Balance) */}
+                <div className="md:col-span-2 hidden md:flex items-center justify-center opacity-40 pt-4">
+                    <Infinity className="w-40 h-20 text-black dark:text-white opacity-40" strokeWidth={1} />
+                </div>
 
-                {/* Theme Toggle */}
-                <ThemeToggle />
+                {/* Column 3: Main Title */}
+                <div className="md:col-span-5 flex flex-col justify-center pt-2">
+                    <h1 className="font-raleway text-[clamp(36px,4.5vw,54px)] leading-[1] tracking-tight text-center md:text-left text-black dark:text-white uppercase">
+                        Where Streaming<br />
+                        Meets Intelligence.
+                    </h1>
+                </div>
 
-                {/* Profile Icon */}
-                <button className="w-3.5 h-3.5 flex items-center justify-center hover:opacity-70 transition-opacity">
-                  <User className="w-3.5 h-3.5" />
-                </button>
-              </div>
+                {/* Column 4: Controls (Toggle & Menu) */}
+                <div className="md:col-span-2 flex justify-start md:justify-end items-center gap-6 pt-2">
+                    <ThemeToggle />
+                    <div className="flex items-center bg-[#F2F0EA] dark:bg-white/10 px-4 py-2 rounded-md cursor-pointer hover:opacity-80 transition-opacity">
+                        <span className="text-[11px] font-mono font-bold tracking-widest text-black dark:text-white">
+                            MENU =
+                        </span>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
       </header>
 
-      {/* Main Hero Section */}
+      {/* Main Hero Section (Exactly from your code) */}
       <main className="flex-1 overflow-hidden">
         <div className="h-full max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr] gap-0 h-full">
@@ -90,9 +99,7 @@ export function Hero() {
                   <span className="text-[11px] font-light">(explore all)</span>
                   <div className="flex items-center">
                     <div className="w-[160px] h-[0.5px] bg-serenya-dark dark:bg-white"></div>
-                    <svg width="10" height="10" viewBox="0 0 10 10" className="ml-[-1px]">
-                      <polygon points="0,0 10,5 0,10" fill="currentColor" />
-                    </svg>
+                    <ChevronRight className="w-3 h-3 ml-[-2px] text-serenya-dark dark:text-white" />
                   </div>
                 </div>
               </div>
@@ -100,6 +107,9 @@ export function Hero() {
               {/* Large S Watermark */}
               <div className="absolute top-[140px] left-4 opacity-[0.06] pointer-events-none select-none z-0">
                 <span className="text-[clamp(200px,25vw,400px)] font-bold leading-none font-hatolie">S</span>
+              </div>
+              <div className="absolute -top-[100px] left-[1275px] opacity-[0.06] pointer-events-none select-none rotate-[10deg] z-0">
+                  <span className="text-[clamp(350px,40vw,500px)] font-bold leading-none font-hatolie">S</span>
               </div>
 
               {/* Search Input Section */}
@@ -113,7 +123,7 @@ export function Hero() {
                         
                         <Textarea 
                           placeholder="Ask anything..." 
-                          className="w-full bg-transparent border-none outline-none text-md text-serenya-dark dark:text-white placeholder:text-serenya-dark/50 dark:placeholder:text-white/50 resize-none h-[60px] p-2 font-medium shadow-none min-h-[60px]"
+                          className="w-full bg-transparent border-none outline-none text-md text-serenya-dark dark:text-white placeholder:text-serenya-dark/50 dark:placeholder:text-white/50 resize-none h-[60px] p-2 font-medium shadow-none min-h-[60px] focus-visible:ring-0 focus-visible:ring-offset-0"
                         />
 
                         <div className="flex items-center justify-between mt-2 pt-2">
@@ -122,16 +132,16 @@ export function Hero() {
                               <Search className="w-4 h-4" />
                               <span>Focus</span>
                             </Button>
-                            <Button variant="ghost" size="icon" className="rounded-full text-serenya-dark/60 hover:text-serenya-dark hover:bg-white/30 h-8 w-8 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
+                            <Button variant="ghost" size="icon" className="rounded-full text-serenya-dark/60 hover:text-serenya-dark hover:bg-black/5 h-8 w-8 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
                               <Globe className="w-5 h-5" />
                             </Button>
                           </div>
 
                           <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" className="text-serenya-dark/60 hover:text-serenya-dark hover:bg-white/30 rounded-full h-9 w-9 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
+                            <Button variant="ghost" size="icon" className="text-serenya-dark/60 hover:text-serenya-dark hover:bg-black/5 rounded-full h-9 w-9 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
                               <Paperclip className="w-5 h-5" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="text-serenya-dark/60 hover:text-serenya-dark hover:bg-white/30 rounded-full h-9 w-9 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
+                            <Button variant="ghost" size="icon" className="text-serenya-dark/60 hover:text-serenya-dark hover:bg-black/5 rounded-full h-9 w-9 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
                               <Mic className="w-5 h-5" />
                             </Button>
                             <Button variant="default" size="icon" className="group rounded-full h-9 w-9 bg-serenya-primary hover:bg-serenya-dark dark:bg-serenya-dark dark:hover:bg-serenya-primary shadow-sm">
@@ -158,63 +168,50 @@ export function Hero() {
                   </div>
 
                   {/* Text Overlays */}
-                  <div className="absolute bottom-4 left-4 text-white/65 font-light">
-                    <div className="text-[clamp(24px,3.5vw,38px)] leading-[1.1] tracking-tight font-raleway">
-                      Where Streaming <br />Meets Intelligence.
+                  <div className="absolute bottom-4 left-5 text-white font-light">
+                    <div className="text-[clamp(24px,3.5vw,30px)] leading-[1.1] tracking-tight font-star">
+                      SMART SEARCH.
                     </div>
                   </div>
                   
                   <div className="absolute bottom-4 right-4 text-white/55 text-[clamp(60px,8vw,90px)] font-light leading-none font-hatolie">
                     S
                   </div>
-                  
-                  <div className="absolute top-4 font-star right-4 text-white text-[clamp(20px,2.5vw,25px)] font-medium leading-none tracking-wider">
-                    SMART SEARCH.
-                  </div>
+                
                 </div>
               </div>
             </div>
 
             {/* Right Section - Visual Panel */}
-            <div className="relative bg-serenya-primary dark:bg-serenya-accent h-full flex items-center justify-center p-6">
-              <div className="absolute top-4 right-4 text-white/25 text-[11px] font-light tracking-wide">
-                (AI)
-              </div>
+            <div className="relative h-full">
+              <div className="relative bg-serenya-primary dark:bg-serenya-accent h-[97%] rounded-sm flex items-center justify-center z-10 overflow-hidden">
+                <div className="absolute top-4 right-4 text-white/25 text-[11px] font-light tracking-wide z-20">
+                  (AI)
+                </div>
+
+     
               
-              {/* Streaming Icons */}
-              <div className="flex items-center justify-center gap-[clamp(16px,2vw,24px)] scale-90">
-                {/* Icon 1 - Play Button */}
-                <div className="relative opacity-35">
-                  <svg width="75" height="110" viewBox="0 0 75 110" className="text-serenya-dark dark:text-[#0F2854]">
-                    <circle cx="37.5" cy="55" r="35" fill="currentColor" />
-                    <polygon points="30,35 30,75 55,55" fill="white" opacity="0.7" />
-                  </svg>
-                </div>
+                {/* Streaming Icons */}
+                <div className="flex items-center justify-center gap-[clamp(16px,2vw,24px)] scale-90 relative z-10">
+                    {/* Icon 1 - Play Button */}
+                    <div className="relative opacity-35">
+                      <Play className="w-20 h-20 text-white dark:text-[#0F2854]" strokeWidth={1} />
+                    </div>
 
-                {/* Icon 2 - Center Prominent */}
-                <div className="relative">
-                  <svg width="95" height="120" viewBox="0 0 95 120" className="text-white dark:text-serenya-bg">
-                    <circle cx="47.5" cy="60" r="45" fill="currentColor" />
-                    <circle cx="47.5" cy="60" r="28" fill="none" stroke="currentColor" strokeWidth="16" opacity="0.3" />
-                  </svg>
-                </div>
+                    {/* Icon 2 - Center Prominent */}
+                    <div className="relative">
+                      <Disc className="w-24 h-24 text-white dark:text-[#0F2854]" strokeWidth={1} />
+                    </div>
 
-                {/* Icon 3 - Waveform */}
-                <div className="relative opacity-35">
-                  <svg width="70" height="105" viewBox="0 0 70 105" className="text-serenya-dark dark:text-[#0F2854]">
-                    <rect x="10" y="35" width="8" height="35" fill="currentColor" rx="2" />
-                    <rect x="22" y="25" width="8" height="55" fill="currentColor" rx="2" />
-                    <rect x="34" y="40" width="8" height="25" fill="currentColor" rx="2" />
-                    <rect x="46" y="30" width="8" height="45" fill="currentColor" rx="2" />
-                  </svg>
-                </div>
+                    {/* Icon 3 - Waveform */}
+                    <div className="relative opacity-35">
+                      <AudioWaveform className="w-20 h-20 text-white dark:text-[#0F2854]" strokeWidth={1} />
+                    </div>
 
-                {/* Icon 4 - Star/Favorite */}
-                <div className="relative">
-                  <svg width="65" height="130" viewBox="0 0 65 130" className="text-white dark:text-serenya-bg">
-                    <polygon points="32.5,25 40,50 65,50 45,65 52.5,90 32.5,75 12.5,90 20,65 0,50 25,50" fill="currentColor" />
-                    <circle cx="32.5" cy="100" r="8" fill="currentColor" opacity="0.5" />
-                  </svg>
+                    {/* Icon 4 - Star/Favorite */}
+                    <div className="relative">
+                      <Sparkles className="w-16 h-16 text-white dark:text-[#0F2854]" strokeWidth={1} />
+                    </div>
                 </div>
               </div>
             </div>
@@ -234,19 +231,19 @@ function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-3.5 h-3.5" />;
+    return <div className="w-9 h-9" />;
   }
 
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="w-3.5 h-3.5 flex items-center justify-center hover:opacity-70 transition-opacity"
+      className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
-        <Sun className="w-3.5 h-3.5" />
+        <Sun className="w-4 h-4 text-black dark:text-white" />
       ) : (
-        <Moon className="w-3.5 h-3.5" />
+        <Moon className="w-4 h-4 text-black dark:text-white" />
       )}
     </button>
   );
