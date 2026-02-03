@@ -7,6 +7,8 @@ import { useFetchMovies, useSearchMovies, useFetchMovieDetails } from "@/hooks/u
 import { MovieCard } from "@/components/movies/movie-card";
 import { MovieModal } from "@/components/movies/movie-modal";
 import { Input } from "@/components/ui/input";
+import { MoviesNavbar } from "@/components/movies-navbar";
+import { MoviesHeroSlider } from "@/components/movies/movies-hero-slider";
 
 export default function MoviesPage() {
   const router = useRouter();
@@ -38,44 +40,33 @@ export default function MoviesPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#020817] text-black dark:text-white">
       {/* Header */}
-      <header className="border-b border-black/10 dark:border-white/10 py-6 px-8 sticky top-0 bg-white/80 dark:bg-[#020817]/80 backdrop-blur-lg z-40">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-3xl font-black font-star tracking-widest">STREAMSMART</h1>
-          <nav className="flex items-center gap-6">
-            <a href="/" className="text-sm font-raleway hover:text-serenya-primary transition-colors flex items-center gap-2">
-              <Home className="w-4 h-4" />
-              Home
-            </a>
-            <a href="/movies" className="text-sm font-raleway text-serenya-primary flex items-center gap-2">
-              <Film className="w-4 h-4" />
-              Movies
-            </a>
-          </nav>
-        </div>
-      </header>
+      <MoviesNavbar />
 
       {/* Hero Section */}
-      <section className="py-12 px-8 bg-gradient-to-b from-serenya-primary/5 to-transparent">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <Film className="w-12 h-12 text-serenya-accent" />
-          </div>
-          <h2 className="text-5xl font-light font-star mb-4 tracking-wider text-center">
-            Discover Movies
+      <section className="relative min-h-[75vh] flex flex-col justify-center px-8 overflow-hidden pt-32 pb-20">
+        {/* Background Slider */}
+        <MoviesHeroSlider />
+
+        {/* Overlay Layer */}
+        <div className="absolute inset-0 z-[1] bg-white/70 dark:bg-black/50" />
+
+        <div className="max-w-7xl mx-auto relative z-10 w-full -mt-40">
+          <h2 className="text-5xl sm:text-7xl font-light font-star mb-4 tracking-wider text-center drop-shadow-2xl">
+            Entertainment,<br /> Refined.
           </h2>
-          <p className="text-lg text-black/70 dark:text-white/70 font-raleway max-w-2xl mx-auto text-center mb-8">
-            Browse through thousands of movies powered by TMDB
+          <p className="text-lg text-black/90 dark:text-white/90 font-raleway max-w-2xl mx-auto text-center mb-10 font-medium drop-shadow-lg">
+            Discover exceptional storytelling across genres, eras, and cultures — presented with clarity and care.
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-black/40 dark:text-white/40" />
+          <div className="max-w-xl mx-auto relative mb-8">
+            <Search className="absolute left-5 opacity-70 top-1/2 transform -translate-y-1/2 w-5 h-5 text-black/50 dark:text-white/50 z-10 pointer-events-none" />
             <Input
               type="text"
               placeholder="Search for movies..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 py-6 text-lg font-raleway bg-white dark:bg-neutral-900 border-2 border-black/10 dark:border-white/10 focus:border-serenya-primary dark:focus:border-serenya-accent rounded-xl"
+              className="pl-13 py-6 text-lg font-raleway bg-white/80 dark:bg-black/60 border border-black/5 dark:border-white/10 rounded-xl backdrop-blur-md focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-black/20 dark:focus:border-white/20 transition-all placeholder:text-black/40 dark:placeholder:text-white/40"
             />
           </div>
         </div>
