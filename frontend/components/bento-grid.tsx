@@ -154,7 +154,7 @@ export function BentoGrid() {
 
         <BentoItem className="md:col-span-3 lg:col-span-2 row-span-1 bg-serenya-accent flex items-center justify-center p-8 group">
             <div className="flex flex-row items-center gap-4 transition-transform duration-300 group-hover:scale-110">
-                <h2 className="text-5xl font-black text-serenya-dark dark:text-white tracking-widest font-star">STREAMSMART</h2>
+                <h2 className="pb-3 text-5xl font-black text-serenya-dark dark:text-white tracking-widest font-star">STREAMSMART</h2>
             </div>
         </BentoItem>
 

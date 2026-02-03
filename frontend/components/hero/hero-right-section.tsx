@@ -1,47 +1,160 @@
 "use client";
 
-import React from "react";
-import { Play, Disc, AudioWaveform, Sparkles } from "lucide-react";
-import { DiagonalLink } from "@/components/ui/diagonal-link";
+import React, { useEffect, useState, useRef } from "react";
+import { useFetchMovies } from "@/hooks/useTMDB";
+import Image from "next/image";
 
 export function HeroRightSection() {
+  const { data: trendingData, loading } = useFetchMovies("/trending/movie/week", 1);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Get first 10 movies for the carousel
+  const movies = trendingData?.results?.slice(0, 10) || [];
+
+  // Auto-scroll effect
+  useEffect(() => {
+    if (movies.length === 0) return;
+
+    const interval = setInterval(() => {
+      setIsTransitioning(true);
+      setCurrentIndex((prev) => (prev + 1) % movies.length);
+      
+      // Reset transition flag after animation
+      setTimeout(() => setIsTransitioning(false), 600);
+    }, 4000); // Change every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [movies.length]);
+
+  // Preload next image for smooth transitions
+  useEffect(() => {
+    if (movies.length > 0) {
+      const nextIndex = (currentIndex + 1) % movies.length;
+      const nextMovie = movies[nextIndex];
+      if (nextMovie?.poster_path) {
+        const img = new window.Image();
+        img.src = `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w500${nextMovie.poster_path}`;
+      }
+    }
+  }, [currentIndex, movies]);
+
   return (
     <div className="relative h-full min-h-[300px] lg:min-h-0">
-
-
       <div className="relative bg-serenya-primary dark:bg-serenya-accent h-[95%] lg:h-[97%] rounded-sm flex items-center justify-center z-10 overflow-hidden mx-4 lg:mx-0 my-3 lg:my-0">
         <div className="absolute top-3 sm:top-4 right-3 sm:right-4 text-white/25 text-[10px] sm:text-[11px] font-light tracking-wide z-20">
           (AI)
         </div>
 
-        {/* Streaming Icons */}
-        <div className="flex items-center justify-center gap-[clamp(12px,2vw,24px)] scale-75 sm:scale-90 relative z-10">
-            {/* Icon 1 - Play Button */}
-            <div className="relative opacity-35">
-              <Play className="w-16 sm:w-20 h-16 sm:h-20 text-white dark:text-[#0F2854]" strokeWidth={1} />
+        {/* Movie Poster Carousel */}
+        <div 
+          ref={containerRef}
+          className="relative w-full h-full flex items-center justify-center overflow-hidden -mt-6 sm:-mt-8 md:-mt-8"
+        >
+          {loading ? (
+            // Loading skeleton
+            <div className="w-full h-full flex items-center justify-center gap-4 px-8">
+              <div className="w-32 sm:w-40 h-48 sm:h-60 bg-white/10 dark:bg-black/20 rounded-lg animate-pulse" />
+              <div className="w-40 sm:w-52 h-60 sm:h-80 bg-white/20 dark:bg-black/30 rounded-lg animate-pulse" />
+              <div className="w-32 sm:w-40 h-48 sm:h-60 bg-white/10 dark:bg-black/20 rounded-lg animate-pulse" />
             </div>
+          ) : movies.length > 0 ? (
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* Previous poster (left, faded) */}
+              <div className="absolute left-4 sm:left-8 z-10 opacity-35 scale-80 transition-all duration-600">
+                {movies[(currentIndex - 1 + movies.length) % movies.length]?.poster_path && (
+                  <div className="relative w-28 sm:w-36 md:w-44 h-42 sm:h-54 md:h-66 rounded-lg overflow-hidden shadow-2xl">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w500${movies[(currentIndex - 1 + movies.length) % movies.length].poster_path}`}
+                      alt={movies[(currentIndex - 1 + movies.length) % movies.length].title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 176px"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </div>
 
-            {/* Icon 2 - Center Prominent */}
-            <div className="relative">
-              <Disc className="w-20 sm:w-24 h-20 sm:h-24 text-white dark:text-[#0F2854]" strokeWidth={1} />
+              {/* Current poster (center, large) */}
+              <div 
+                className={`relative z-20 transition-all duration-600 ${
+                  isTransitioning ? 'scale-95 opacity-90' : 'scale-100 opacity-100'
+                }`}
+              >
+                {movies[currentIndex]?.poster_path && (
+                  <div className="relative w-52 sm:w-64 md:w-80 h-78 sm:h-96 md:h-[480px] rounded-lg overflow-hidden shadow-2xl ring-2 ring-white/20">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w780${movies[currentIndex].poster_path}`}
+                      alt={movies[currentIndex].title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 208px, (max-width: 768px) 256px, 320px"
+                      priority
+                    />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    
+                    {/* Rating - Top Right (Minimal) */}
+                    <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center gap-1">
+                      <span className="text-yellow-400 text-sm sm:text-base">★</span>
+                      <span className="text-white font-raleway font-semibold text-sm sm:text-base">
+                        {movies[currentIndex].vote_average.toFixed(1)}
+                      </span>
+                    </div>
+
+                    {/* Movie Title - Bottom Left */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-5">
+                      <h3 className="text-white font-raleway font-bold text-sm sm:text-base md:text-lg line-clamp-2">
+                        {movies[currentIndex].title}
+                      </h3>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Next poster (right, faded) */}
+              <div className="absolute right-4 sm:right-8 z-10 opacity-35 scale-80 transition-all duration-600">
+                {movies[(currentIndex + 1) % movies.length]?.poster_path && (
+                  <div className="relative w-28 sm:w-36 md:w-44 h-42 sm:h-54 md:h-66 rounded-lg overflow-hidden shadow-2xl">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w500${movies[(currentIndex + 1) % movies.length].poster_path}`}
+                      alt={movies[(currentIndex + 1) % movies.length].title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 176px"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">
+                {movies.slice(0, 10).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      setIsTransitioning(true);
+                      setCurrentIndex(index);
+                      setTimeout(() => setIsTransitioning(false), 600);
+                    }}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      index === currentIndex
+                        ? 'w-8 bg-white'
+                        : 'w-2 bg-white/50 hover:bg-white/70'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
-
-            {/* Icon 3 - Waveform */}
-            <div className="relative opacity-35">
-              <AudioWaveform className="w-16 sm:w-20 h-16 sm:h-20 text-white dark:text-[#0F2854]" strokeWidth={1} />
+          ) : (
+            // Fallback if no movies
+            <div className="text-white/50 font-raleway text-sm">
+              Loading trending movies...
             </div>
-
-            {/* Icon 4 - Star/Favorite */}
-            <div className="relative">
-              <Sparkles className="w-14 sm:w-16 h-14 sm:h-16 text-white dark:text-[#0F2854]" strokeWidth={1} />
-            </div>
-        </div>
-
-        {/* Watch Movies Link - Bottom Right */}
-        <div className="absolute bottom-4 right-4 z-20">
-          <DiagonalLink href="/movies" className="text-white dark:text-white font-raleway text-md [&_.char-replacement]:text-serenya-dark [&_.char-replacement]:dark:text-serenya-dark">
-            Watch Movies Normally.
-          </DiagonalLink>
+          )}
         </div>
       </div>
     </div>

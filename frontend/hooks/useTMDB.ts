@@ -1,0 +1,116 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import { MoviesResponse, MovieDetails } from '@/lib/types/movie';
+
+const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
+
+export const useFetchMovies = (endpoint: string, page: number = 1) => {
+  const [data, setData] = useState<MoviesResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const url = `${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}&page=${page}`;
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        console.error('API Error:', err);
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovies();
+  }, [endpoint, page]);
+
+  return { data, loading, error };
+};
+
+export const useFetchMovieDetails = (movieId: number | null) => {
+  const [data, setData] = useState<MovieDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMovieDetails = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const url = `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=videos,credits,similar`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (movieId) {
+      fetchMovieDetails();
+    }
+  }, [movieId]);
+
+  return { data, loading, error };
+};
+
+export const useSearchMovies = (query: string, page: number = 1) => {
+  const [data, setData] = useState<MoviesResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const searchMovies = async () => {
+      if (!query.trim()) {
+        setData(null);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const url = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${page}`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        setData(result);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const timeoutId = setTimeout(searchMovies, 500);
+    return () => clearTimeout(timeoutId);
+  }, [query, page]);
+
+  return { data, loading, error };
+};
