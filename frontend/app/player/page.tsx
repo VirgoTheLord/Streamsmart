@@ -18,9 +18,9 @@ const PLAYER_MIRRORS: PlayerMirror[] = [
     name: "VidSrc",
     buildUrl: ({ imdbId, movieId }) => {
       if (imdbId) {
-        return `https://vidsrc-embed.ru/embed/movie?imdb=${imdbId}&autoplay=1`;
+        return `${process.env.NEXT_PUBLIC_VIDSRC_EMBED_URL}/movie?imdb=${imdbId}&autoplay=1`;
       }
-      return `https://vidsrc-embed.ru/embed/movie?tmdb=${movieId}&autoplay=1`;
+      return `${process.env.NEXT_PUBLIC_VIDSRC_EMBED_URL}/movie?tmdb=${movieId}&autoplay=1`;
     },
     priority: 1,
   },
@@ -30,7 +30,7 @@ const PLAYER_MIRRORS: PlayerMirror[] = [
     buildUrl: ({ imdbId, movieId }) => {
       // 2Embed supports both IMDb and TMDB IDs directly in the URL
       const identifier = imdbId || movieId;
-      return `https://www.2embed.cc/embed/${identifier}`;
+      return `${process.env.NEXT_PUBLIC_2EMBED_URL}/${identifier}`;
     },
     priority: 2,
   },
@@ -40,7 +40,7 @@ const PLAYER_MIRRORS: PlayerMirror[] = [
     buildUrl: ({ movieId }) => {
       // VidKing only supports TMDB IDs
       // Using custom color (16A085 - teal) and autoplay
-      return `https://www.vidking.net/embed/movie/${movieId}?color=16A085&autoPlay=true`;
+      return `${process.env.NEXT_PUBLIC_VIDKING_EMBED_URL}/movie/${movieId}?color=16A085&autoPlay=true`;
     },
     priority: 3,
   },
@@ -50,7 +50,7 @@ const PLAYER_MIRRORS: PlayerMirror[] = [
     buildUrl: ({ movieId }) => {
       // VidLink only supports TMDB IDs
       // Using custom colors (primaryColor and iconColor) and autoplay
-      return `https://vidlink.pro/movie/${movieId}?primaryColor=16A085&iconColor=16A085&autoplay=true`;
+      return `${process.env.NEXT_PUBLIC_VIDLINK_EMBED_URL}/movie/${movieId}?primaryColor=16A085&iconColor=16A085&autoplay=true`;
     },
     priority: 4,
   },
@@ -59,7 +59,7 @@ const PLAYER_MIRRORS: PlayerMirror[] = [
     name: "VidFast",
     buildUrl: ({ imdbId, movieId }) => {
       const identifier = imdbId || movieId;
-      return `https://vidfast.pro/movie/${identifier}?autoPlay=true&theme=16A085`;
+      return `${process.env.NEXT_PUBLIC_VIDFAST_EMBED_URL}/movie/${identifier}?autoPlay=true&theme=16A085`;
     },
     priority: 5,
   },

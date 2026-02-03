@@ -62,7 +62,7 @@ export function MovieModal({ movie, isOpen, onClose, onWatchMovie }: MovieModalP
         {showTrailer && trailer ? (
           <div className="relative aspect-video w-full">
             <iframe
-              src={`https://www.youtube.com/embed/${trailer.key}?autoplay=1`}
+              src={`${process.env.NEXT_PUBLIC_YOUTUBE_EMBED_URL}/${trailer.key}?autoplay=1`}
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
