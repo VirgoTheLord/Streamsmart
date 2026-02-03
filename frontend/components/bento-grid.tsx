@@ -3,13 +3,15 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { 
-  Map as MapIcon, 
-  MessageSquare, 
-  Video, 
+  Film, 
+  Sparkles, 
+  Play, 
   Home, 
-  Grid, 
+  TrendingUp, 
   Search, 
-  Trees 
+  Library,
+  Star,
+  Zap
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -85,14 +87,17 @@ export function BentoGrid() {
                    <div className="absolute inset-0 flex items-center justify-center">
                         <Image 
                             src="/new.avif"
-                            alt="Mountain Landscape"
+                            alt="Movie Scene"
                             fill
                             className="object-cover opacity-80"
                             unoptimized
                         />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center z-10">
-                            <h3 className="text-xl font-bold uppercase tracking-widest mb-1">Take the Trail</h3>
-                            <h2 className="text-3xl font-black text-serenya-accent">FIND FREEDOM</h2>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center z-20">
+                            
+                            <h3 className="text-xl font-bold uppercase tracking-widest mb-1 font-raleway">AI-Powered</h3>
+                            <h2 className="text-3xl font-black text-serenya-accent font-star">SMART SEARCH</h2>
+                            <p className="text-sm mt-2 text-white/70 font-raleway max-w-xs">Discover movies tailored to your mood and preferences</p>
                         </div>
                    </div>
                </div>
@@ -103,11 +108,17 @@ export function BentoGrid() {
         <BentoItem className="md:col-span-3 lg:col-span-1 row-span-4 relative group">
              <Image 
                 src="/new.avif" 
-                alt="Hiker" 
+                alt="Movie Poster" 
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                 unoptimized
              />
+             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+             <div className="absolute inset-0 flex flex-col items-center justify-center text-white font-raleway p-6 z-20">
+                 <h3 className="text-2xl font-bold text-center font-raleway">Personalized</h3>
+                 <h3 className="text-2xl font-bold text-center font-raleway mb-2">Recommendations</h3>
+                 <p className="text-xs text-center text-white/70 mt-2">Curated just for you</p>
+             </div>
         </BentoItem>
 
 
@@ -125,10 +136,14 @@ export function BentoGrid() {
                       <div className="absolute top-0 w-full h-6 bg-black z-10 flex justify-center"><div className="w-20 h-4 bg-neutral-800 rounded-b-xl"></div></div>
                       <div className="p-3 pt-8">
                           <div className="flex items-center gap-2 mb-3">
-                              <div className="w-6 h-6 rounded-full bg-serenya-accent"></div>
+                              <div className="w-6 h-6 rounded-full bg-serenya-accent flex items-center justify-center">
+                                  <Play className="w-3 h-3 text-white fill-white" />
+                              </div>
                               <div className="h-1.5 w-16 bg-neutral-700 rounded"></div>
                           </div>
-                           <div className="h-24 w-full bg-neutral-800 rounded-xl mb-2 opacity-50"></div>
+                           <div className="h-24 w-full bg-gradient-to-br from-serenya-primary to-serenya-accent rounded-xl mb-2 opacity-80 flex items-center justify-center">
+                               <Star className="w-8 h-8 text-white/50" />
+                           </div>
                            <div className="h-1.5 w-full bg-neutral-700 rounded mb-1"></div>
                            <div className="h-1.5 w-2/3 bg-neutral-700 rounded"></div>
                       </div>
@@ -139,8 +154,7 @@ export function BentoGrid() {
 
         <BentoItem className="md:col-span-3 lg:col-span-2 row-span-1 bg-serenya-accent flex items-center justify-center p-8 group">
             <div className="flex flex-row items-center gap-4 transition-transform duration-300 group-hover:scale-110">
-                <Trees className="w-16 h-16 text-serenya-dark dark:text-white" />
-                <h2 className="text-5xl font-black text-serenya-dark dark:text-white tracking-tighter">CRESTLINE</h2>
+                <h2 className="text-5xl font-black text-serenya-dark dark:text-white tracking-widest font-star">STREAMSMART</h2>
             </div>
         </BentoItem>
 
@@ -148,7 +162,7 @@ export function BentoGrid() {
          <BentoItem className="md:col-span-3 lg:col-span-1 row-span-1 bg-serenya-primary text-white p-8">
              <div className="flex flex-col justify-center items-center h-full w-full">
                  <span className="text-sm uppercase tracking-[0.2em] mb-4 text-white/60">Main font</span>
-                 <h3 className="text-6xl font-medium text-white mb-6">Roboto</h3>
+                 <h3 className="text-6xl font-medium text-white mb-6 font-raleway">Raleway</h3>
                  <div className="text-sm space-x-2 opacity-60 text-center tracking-wider">
                      <span>Aa</span><span>Bb</span><span>Cc</span><span>Dd</span>
                  </div>
@@ -162,13 +176,13 @@ export function BentoGrid() {
              
              <div className="flex flex-row items-center justify-center gap-8 h-full w-full relative z-10">
                  <div className="w-16 h-16 bg-serenya-bg rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:-translate-y-1">
-                     <Trees className="w-8 h-8 text-serenya-dark dark:text-white" />
+                     <Sparkles className="w-8 h-8 text-serenya-accent" />
                  </div>
                  <div className="w-16 h-16 bg-serenya-primary rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:-translate-y-1 delay-75">
-                     <MessageSquare className="w-8 h-8 text-white fill-current" />
+                     <Film className="w-8 h-8 text-white" />
                  </div>
                  <div className="w-16 h-16 bg-serenya-primary rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:-translate-y-1 delay-150">
-                     <Video className="w-8 h-8 text-white fill-current" />
+                     <Zap className="w-8 h-8 text-white" />
                  </div>
              </div>
         </BentoItem>
@@ -180,13 +194,13 @@ export function BentoGrid() {
                      <Home className="w-6 h-6" />
                  </div>
                  <div className="w-14 h-14 rounded-full bg-serenya-accent text-white flex items-center justify-center ring-4 ring-serenya-accent/20 cursor-pointer shadow-md">
-                     <MapIcon className="w-6 h-6 fill-current" />
+                     <TrendingUp className="w-6 h-6" />
                  </div>
                  <div className="w-14 h-14 rounded-full bg-white dark:bg-serenya-bg/20 text-black dark:text-white flex items-center justify-center hover:bg-serenya-bg dark:hover:bg-serenya-bg/40 transition-colors cursor-pointer shadow-md">
                      <Search className="w-6 h-6" />
                  </div>
                  <div className="w-14 h-14 rounded-full bg-white dark:bg-serenya-bg/20 text-black dark:text-white flex items-center justify-center hover:bg-serenya-bg dark:hover:bg-serenya-bg/40 transition-colors cursor-pointer shadow-md">
-                     <Grid className="w-6 h-6" />
+                     <Library className="w-6 h-6" />
                  </div>
              </div>
         </BentoItem>

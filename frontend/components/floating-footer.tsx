@@ -4,7 +4,7 @@ import { Twitter, Instagram, Globe } from "lucide-react";
 
 export function FloatingFooter() {
   return (
-    <div className="flex justify-center w-full px-4 pb-8 pt-20">
+    <div className="flex justify-center w-full px-4 pb-8 pt-5">
       <div className="relative w-full max-w-[1500px] bg-white dark:bg-black rounded-[3rem] border border-serenya-accent/20 dark:border-serenya-dark/10 overflow-hidden shadow-2xl transition-colors duration-300">
         
 
