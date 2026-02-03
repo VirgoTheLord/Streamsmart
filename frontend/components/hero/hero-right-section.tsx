@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Play, Disc, AudioWaveform, Sparkles } from "lucide-react";
+import { DiagonalLink } from "@/components/ui/diagonal-link";
 
 export function HeroRightSection() {
   return (
@@ -34,6 +35,13 @@ export function HeroRightSection() {
             <div className="relative">
               <Sparkles className="w-14 sm:w-16 h-14 sm:h-16 text-white dark:text-[#0F2854]" strokeWidth={1} />
             </div>
+        </div>
+
+        {/* Watch Movies Link - Bottom Right */}
+        <div className="absolute bottom-4 right-4 z-20">
+          <DiagonalLink href="/movies" className="text-white dark:text-white font-raleway text-md [&_.char-replacement]:text-serenya-dark [&_.char-replacement]:dark:text-serenya-dark">
+            Watch Movies Normally.
+          </DiagonalLink>
         </div>
       </div>
     </div>
