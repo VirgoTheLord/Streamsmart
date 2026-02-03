@@ -1,11 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { DiagonalLink } from "@/components/ui/diagonal-link";
 import { Search, Globe, Paperclip, Mic, ArrowRight, ChevronRight } from "lucide-react";
 
 export function HeroLeftSection() {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   return (
     <div className="relative bg-white dark:bg-[#020817] h-full flex flex-col">
       {/* StreamSmart Text */}
@@ -53,6 +56,29 @@ export function HeroLeftSection() {
                     <Button variant="ghost" size="icon" className="rounded-full text-serenya-dark/60 hover:text-serenya-dark hover:bg-black/5 h-7 w-7 sm:h-8 sm:w-8 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
                       <Globe className="w-4 sm:w-5 h-4 sm:h-5" />
                     </Button>
+                    
+                    {/* Watch Direct Link with Tooltip */}
+                    <div 
+                      className="relative"
+                      onMouseEnter={() => setShowTooltip(true)}
+                      onMouseLeave={() => setShowTooltip(false)}
+                    >
+                      <DiagonalLink 
+                        href="/movies" 
+                        className="text-serenya-dark dark:text-white font-raleway text-xs sm:text-sm [&_.char-replacement]:text-serenya-primary [&_.char-replacement]:dark:text-white"
+                      >
+                        Watch Direct
+                      </DiagonalLink>
+                      
+                      {/* Smooth Tooltip */}
+                      <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-serenya-dark dark:bg-white text-white dark:text-serenya-dark text-xs font-raleway rounded-lg whitespace-nowrap pointer-events-none transition-all duration-300 ${showTooltip ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}>
+                        Watch movies normally without using this feature
+                        {/* Tooltip Arrow */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                          <div className="border-4 border-transparent border-t-serenya-dark dark:border-t-white" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-1 sm:gap-2">
