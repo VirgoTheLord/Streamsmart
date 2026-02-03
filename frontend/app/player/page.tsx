@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { X, RefreshCw, AlertCircle } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 
 // Define available player mirrors
 interface PlayerMirror {
@@ -65,7 +65,7 @@ const PLAYER_MIRRORS: PlayerMirror[] = [
   },
 ];
 
-export default function MoviePlayerPage() {
+function MoviePlayer() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -293,5 +293,20 @@ export default function MoviePlayerPage() {
         />
       </div>
     </div>
+  );
+}
+
+export default function MoviePlayerPage() {
+  return (
+    <Suspense fallback={
+      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="w-12 h-12 text-serenya-primary animate-spin mx-auto mb-4" />
+          <p className="text-white font-raleway">Loading player...</p>
+        </div>
+      </div>
+    }>
+      <MoviePlayer />
+    </Suspense>
   );
 }
