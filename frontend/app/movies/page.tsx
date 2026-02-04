@@ -75,7 +75,8 @@ export default function MoviesPage() {
       </section>
 
       {/* Movies Grid */}
-      <section className="py-12 px-8">
+      {/* Movies Grid */}
+      <section className="py-12 px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           {/* Section Title */}
           <div className="flex items-center gap-3 mb-8">
@@ -99,31 +100,33 @@ export default function MoviesPage() {
               <Loader2 className="w-12 h-12 text-serenya-primary animate-spin" />
             </div>
           )}
+        </div>
 
-          {/* Movies Carousel */}
-          {!isLoading && displayMovies && displayMovies.length > 0 && (
-            <DraggableScroll className="gap-4 py-4 -mx-8 px-8">
-              {displayMovies.slice(0, 10).map((movie) => (
-                <div key={movie.id} className="min-w-[160px] sm:min-w-[200px] md:min-w-[240px] flex-shrink-0 select-none text-left">
-                  <MovieCard
-                    movie={movie}
-                    onClick={() => setSelectedMovieId(movie.id)}
-                  />
-                </div>
-              ))}
-              
-              {/* See More Section */}
-              <div className="min-w-[160px] sm:min-w-[200px] md:min-w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
-                <div className="flex flex-col items-center justify-center">
-                  <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center ">SEE <br />MORE</span>
-                </div>
-                 <button className="w-20 h-20 rounded-full bg-neutral-900 dark:bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110">
-                    <ArrowUpRight className="w-8 h-8 text-white dark:text-black" />
-                 </button>
+        {/* Movies Carousel */}
+        {!isLoading && displayMovies && displayMovies.length > 0 && (
+          <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
+            {displayMovies.slice(0, 10).map((movie) => (
+              <div key={movie.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
+                <MovieCard
+                  movie={movie}
+                  onClick={() => setSelectedMovieId(movie.id)}
+                />
               </div>
-            </DraggableScroll>
-          )}
+            ))}
+            
+            {/* See More Section */}
+            <div className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
+              <div className="flex flex-col items-center justify-center">
+                <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center leading-none">SEE <br />MORE</span>
+              </div>
+                <button className="w-20 h-20 rounded-full bg-neutral-900 dark:bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110">
+                  <ArrowUpRight className="w-8 h-8 text-white dark:text-black" />
+                </button>
+            </div>
+          </DraggableScroll>
+        )}
 
+        <div className="max-w-7xl mx-auto">
           {/* No Results */}
           {!isLoading && displayMovies && displayMovies.length === 0 && (
             <div className="text-center py-20">

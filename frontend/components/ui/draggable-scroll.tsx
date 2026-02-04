@@ -8,12 +8,11 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-interface DraggableScrollProps {
+interface DraggableScrollProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  className?: string;
 }
 
-export function DraggableScroll({ children, className }: DraggableScrollProps) {
+export function DraggableScroll({ children, className, ...props }: DraggableScrollProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -56,7 +55,9 @@ export function DraggableScroll({ children, className }: DraggableScrollProps) {
       style={{
         scrollbarWidth: 'none',
         msOverflowStyle: 'none',
+        ...props.style
       }}
+      {...props}
     >
       {children}
     </div>
