@@ -20,11 +20,9 @@ export function MovieCard({ movie, onClick }: MovieCardProps) {
       className="group cursor-pointer flex flex-col gap-4 perspective-1000"
       style={{ perspective: "500px" }}
     >
-      {/* 3D Image Container */}
       <div className="relative w-full aspect-[2/3] transition-all duration-500 ease-out transform-style-3d group-hover:transform-none shadow-xl hover:shadow-2xl"
            style={{ transform: "rotateY(12deg)" }}>
         
-        {/* Poster Image */}
         <div className="relative w-full h-full rounded-xl overflow-hidden bg-neutral-900">
           <Image
             src={imageUrl}
@@ -33,15 +31,12 @@ export function MovieCard({ movie, onClick }: MovieCardProps) {
             className="object-cover"
             unoptimized
           />
-          {/* Transparent Overlay Layer */}
           <div className="absolute inset-0 bg-black/20 transition-opacity duration-300 group-hover:opacity-0" />
           
-          {/* Shine effect overlay */}
           <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
       </div>
 
-      {/* External Info Info */}
       <div className="px-1 mt-2">
         <h3 className="font-raleway font-bold text-neutral-900 dark:text-white text-lg leading-tight line-clamp-1 mb-1 drop-shadow-md">
           {movie.title}

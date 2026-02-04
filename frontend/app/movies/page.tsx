@@ -17,20 +17,16 @@ export default function MoviesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
   
-  // Fetch trending movies
   const { data: trendingData, loading: trendingLoading } = useFetchMovies("/trending/movie/week", 1);
   
-  // Search movies
   const { data: searchData, loading: searchLoading } = useSearchMovies(searchQuery, 1);
   
-  // Fetch selected movie details
   const { data: movieDetails } = useFetchMovieDetails(selectedMovieId);
 
   const displayMovies = searchQuery.trim() ? searchData?.results : trendingData?.results;
   const isLoading = searchQuery.trim() ? searchLoading : trendingLoading;
 
   const handleWatchMovie = (movieId: number, imdbId?: string, title?: string) => {
-    // Navigate to player page with movie details
     const params = new URLSearchParams({
       id: movieId.toString(),
       ...(imdbId && { imdbId }),
@@ -40,16 +36,12 @@ export default function MoviesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#020817] text-black dark:text-white">
-      {/* Header */}
+    <div className="min-h-screen bg-white dark:bg-[#000000] text-black dark:text-white">
       <MoviesNavbar />
 
-      {/* Hero Section */}
       <section className="relative min-h-[75vh] flex flex-col justify-center px-8 overflow-hidden pt-32 pb-20">
-        {/* Background Slider */}
         <MoviesHeroSlider />
 
-        {/* Overlay Layer */}
         <div className="absolute inset-0 z-[1] bg-white/70 dark:bg-black/50" />
 
         <div className="max-w-7xl mx-auto relative z-10 w-full -mt-40">
@@ -60,7 +52,6 @@ export default function MoviesPage() {
             Discover exceptional storytelling across genres, eras, and cultures — presented with clarity and care.
           </p>
 
-          {/* Search Bar */}
           <div className="max-w-xl mx-auto relative mb-8">
             <Search className="absolute left-5 opacity-70 top-1/2 transform -translate-y-1/2 w-5 h-5 text-black/50 dark:text-white/50 z-10 pointer-events-none" />
             <Input
@@ -74,11 +65,8 @@ export default function MoviesPage() {
         </div>
       </section>
 
-      {/* Movies Grid */}
-      {/* Movies Grid */}
       <section className="py-12 px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          {/* Section Title */}
           <div className="flex items-center gap-3 mb-8">
             {searchQuery.trim() ? (
               <>
@@ -94,7 +82,6 @@ export default function MoviesPage() {
             )}
           </div>
 
-          {/* Loading State */}
           {isLoading && (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-12 h-12 text-serenya-primary animate-spin" />
@@ -102,7 +89,6 @@ export default function MoviesPage() {
           )}
         </div>
 
-        {/* Movies Carousel */}
         {!isLoading && displayMovies && displayMovies.length > 0 && (
           <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
             {displayMovies.slice(0, 10).map((movie) => (
@@ -114,7 +100,6 @@ export default function MoviesPage() {
               </div>
             ))}
             
-            {/* See More Section */}
             <div className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
               <div className="flex flex-col items-center justify-center">
                 <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center leading-none">SEE <br />MORE</span>
@@ -127,7 +112,6 @@ export default function MoviesPage() {
         )}
 
         <div className="max-w-7xl mx-auto">
-          {/* No Results */}
           {!isLoading && displayMovies && displayMovies.length === 0 && (
             <div className="text-center py-20">
               <Film className="w-16 h-16 text-black/20 dark:text-white/20 mx-auto mb-4" />
@@ -139,7 +123,6 @@ export default function MoviesPage() {
         </div>
       </section>
 
-      {/* Movie Modal */}
       <MovieModal
         movie={movieDetails || (displayMovies?.find(m => m.id === selectedMovieId) || null)}
         isOpen={selectedMovieId !== null}

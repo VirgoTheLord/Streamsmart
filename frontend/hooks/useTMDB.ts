@@ -50,7 +50,7 @@ export const useFetchMovieDetails = (movieId: number | null) => {
     const fetchMovieDetails = async () => {
       try {
         setLoading(true);
-        setData(null); // Clear old data to prevent persistence
+        setData(null); 
         setError(null);
         
         const url = `${TMDB_BASE_URL}/movie/${movieId}?api_key=${TMDB_API_KEY}&append_to_response=videos,credits,similar`;
