@@ -95,34 +95,34 @@ export function MovieModal({ movie, isOpen, onClose, onWatchMovie }: MovieModalP
         </div>
 
         {/* Content Section */}
-        <div className="flex-1 p-8 md:p-10 flex flex-col overflow-y-auto md:max-h-[85vh] relative bg-[#0a0a0a]">
-             {/* Mobile Gradient connection */}
+        <div className="flex-1 p-8 md:p-10 flex flex-col overflow-y-auto md:max-h-[85vh] relative bg-[#0a0a0a] no-scrollbar [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {/* Mobile Gradient connection */}
              <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#0a0a0a] to-transparent md:hidden pointer-events-none" />
 
             <div className="mb-6">
-                <h2 className="text-3xl md:text-5xl font-black font-star text-white mb-3 leading-tight tracking-tight">
-                    {movie.title}
+                <h2 className="text-2xl md:text-3xl mt-2 font-black font-star text-white mb-3 leading-tight tracking-wide">
+                    {movie.title.toLowerCase()}
                 </h2>
                  {movie.tagline && (
-                    <p className="text-xl text-white/50 font-raleway font-light italic">
+                    <p className="text-lg text-white/50 font-raleway font-light italic">
                     "{movie.tagline}"
                     </p>
                 )}
             </div>
 
             {/* Quick Stats */}
-            <div className="flex flex-wrap items-center gap-6 mb-8 text-sm md:text-base font-raleway font-medium text-white/60">
+            <div className="flex flex-wrap items-center gap-6 mb-8 text-xs md:text-sm font-raleway font-medium text-white/60">
                 <div className="flex items-center gap-2 text-yellow-500">
-                    <Star className="w-5 h-5 fill-yellow-500" />
+                    <Star className="w-4 h-4 fill-yellow-500" />
                     <span className="text-white">{movie.vote_average.toFixed(1)}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5" />
+                    <Calendar className="w-4 h-4" />
                     <span>{movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}</span>
                 </div>
                 {movie.runtime && (
                     <div className="flex items-center gap-2">
-                         <Clock className="w-5 h-5" />
+                         <Clock className="w-4 h-4" />
                         <span>{movie.runtime} min</span>
                     </div>
                 )}
@@ -134,7 +134,7 @@ export function MovieModal({ movie, isOpen, onClose, onWatchMovie }: MovieModalP
                   {movie.genres.map((genre) => (
                     <span
                       key={genre.id}
-                      className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs md:text-sm text-white/80 font-raleway hover:bg-white/10 transition-colors cursor-default"
+                      className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] md:text-xs text-white/80 font-raleway hover:bg-white/10 transition-colors cursor-default"
                     >
                       {genre.name}
                     </span>
@@ -144,27 +144,32 @@ export function MovieModal({ movie, isOpen, onClose, onWatchMovie }: MovieModalP
 
              {/* Overview */}
             <div className="mb-8 flex-grow">
-                <h3 className="text-lg font-bold text-white mb-3 font-raleway">Synopsis</h3>
-                <p className="text-white/70 font-raleway leading-relaxed text-base md:text-lg">
+                <h3 className="text-base font-bold text-white mb-2 font-raleway">Synopsis</h3>
+                <p className="text-white/70 font-raleway leading-relaxed text-sm md:text-base">
                     {movie.overview}
                 </p>
             </div>
 
             {/* Actions */}
-            <div className="mt-auto pt-6 border-t border-white/5 flex gap-4">
+            <div className="mt-auto pt-6 border-t border-white/5 flex flex-col gap-3">
                 <button
                     onClick={handleWatchMovie}
-                    className="flex-1 py-4 bg-white hover:bg-neutral-200 text-black rounded-xl font-bold font-raleway text-lg flex items-center justify-center gap-2 transition-transform active:scale-95"
+                    className="group/watch w-full py-4 bg-white hover:bg-neutral-200 text-black rounded-xl flex items-center justify-center gap-3 transition-all duration-300 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
                 >
-                    <Play className="w-5 h-5 fill-black" />
-                    Watch Now
+                    <div className="w-8 h-8 rounded-full border border-black/30 flex items-center justify-center group-hover/watch:border-black group-hover/watch:scale-110 transition-all duration-300">
+                        <Play className="w-3 h-3 text-black fill-black" />
+                    </div>
+                    <span className="font-raleway font-bold text-black uppercase tracking-widest text-sm group-hover/watch:tracking-[0.2em] transition-all duration-300">Watch Now</span>
                 </button>
                  {trailer && !showTrailer && (
                      <button 
                         onClick={() => setShowTrailer(true)}
-                        className="px-6 py-4 bg-transparent border border-white/20 hover:bg-white/5 text-white rounded-xl font-bold font-raleway flex items-center gap-2 transition-colors"
+                        className="group/trailer w-full py-4 bg-transparent border border-white/10 hover:border-white/30 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 hover:bg-white/5"
                      >
-                         Trailer
+                         <div className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center group-hover/trailer:border-white group-hover/trailer:scale-110 transition-all duration-300">
+                             <Play className="w-3 h-3 text-white fill-white" />
+                         </div>
+                         <span className="font-raleway font-bold text-white uppercase tracking-widest text-sm group-hover/trailer:tracking-[0.2em] transition-all duration-300">Trailer</span>
                      </button>
                  )}
             </div>
