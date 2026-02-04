@@ -1,12 +1,12 @@
 "use client";
 
-import { MovieDetails } from "@/lib/types/movie";
+import { Movie, MovieDetails } from "@/lib/types/movie";
 import { X, Play, Star, Calendar, Clock, Film } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface MovieModalProps {
-  movie: MovieDetails | null;
+  movie: Movie | MovieDetails | null;
   isOpen: boolean;
   onClose: () => void;
   onWatchMovie?: (movieId: number, imdbId?: string, title?: string) => void;
@@ -16,24 +16,34 @@ export function MovieModal({ movie, isOpen, onClose, onWatchMovie }: MovieModalP
   const [showTrailer, setShowTrailer] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
       setShowTrailer(false);
+      document.body.style.overflow = 'unset';
     }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [isOpen]);
 
   if (!isOpen || !movie) return null;
+
+  // Cast to MovieDetails to access potential extra fields safely
+  const details = movie as MovieDetails;
 
   const backdropUrl = movie.backdrop_path
     ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/original${movie.backdrop_path}`
     : '/placeholder-backdrop.png';
 
-  const trailer = movie.videos?.results.find(
+  const trailer = details.videos?.results.find(
     (video) => video.type === 'Trailer' && video.site === 'YouTube'
   );
 
   const handleWatchMovie = () => {
     if (onWatchMovie) {
-      onWatchMovie(movie.id, movie.imdb_id, movie.title);
+      onWatchMovie(movie.id, details.imdb_id, movie.title);
     }
   };
 
@@ -82,14 +92,16 @@ export function MovieModal({ movie, isOpen, onClose, onWatchMovie }: MovieModalP
                 <div className="absolute inset-0 bg-black/20" />
                 
                 {/* Play Button Overlay (Large) */}
-                 <button
-                    onClick={() => setShowTrailer(true)}
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group/play"
-                 >
-                    <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-300 group-hover/play:scale-110 group-hover/play:bg-white/20">
-                     <Play className="w-8 h-8 text-white fill-white ml-1 opacity-80 group-hover/play:opacity-100" />
-                    </div>
-                </button>
+                {trailer && (
+                     <button
+                        onClick={() => setShowTrailer(true)}
+                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 group/play"
+                     >
+                        <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-300 group-hover/play:scale-110 group-hover/play:bg-white/20">
+                         <Play className="w-8 h-8 text-white fill-white ml-1 opacity-80 group-hover/play:opacity-100" />
+                        </div>
+                    </button>
+                )}
                 </>
             )}
         </div>
@@ -103,9 +115,9 @@ export function MovieModal({ movie, isOpen, onClose, onWatchMovie }: MovieModalP
                 <h2 className="text-2xl md:text-3xl mt-2 font-black font-star text-white mb-3 leading-tight tracking-wide">
                     {movie.title.toLowerCase()}
                 </h2>
-                 {movie.tagline && (
+                 {details.tagline && (
                     <p className="text-lg text-white/50 font-raleway font-light italic">
-                    "{movie.tagline}"
+                    "{details.tagline}"
                     </p>
                 )}
             </div>
@@ -120,18 +132,18 @@ export function MovieModal({ movie, isOpen, onClose, onWatchMovie }: MovieModalP
                     <Calendar className="w-4 h-4" />
                     <span>{movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}</span>
                 </div>
-                {movie.runtime && (
+                {details.runtime && (
                     <div className="flex items-center gap-2">
                          <Clock className="w-4 h-4" />
-                        <span>{movie.runtime} min</span>
+                        <span>{details.runtime} min</span>
                     </div>
                 )}
             </div>
 
             {/* Genres */}
-             {movie.genres && movie.genres.length > 0 && (
+             {details.genres && details.genres.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-8">
-                  {movie.genres.map((genre) => (
+                  {details.genres.map((genre) => (
                     <span
                       key={genre.id}
                       className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] md:text-xs text-white/80 font-raleway hover:bg-white/10 transition-colors cursor-default"

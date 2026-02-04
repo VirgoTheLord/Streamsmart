@@ -141,7 +141,7 @@ export default function MoviesPage() {
 
       {/* Movie Modal */}
       <MovieModal
-        movie={movieDetails}
+        movie={movieDetails || (displayMovies?.find(m => m.id === selectedMovieId) || null)}
         isOpen={selectedMovieId !== null}
         onClose={() => setSelectedMovieId(null)}
         onWatchMovie={handleWatchMovie}
