@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { X, RefreshCw, AlertCircle } from "lucide-react";
+import { X, RefreshCw, AlertCircle, Server, Film, MonitorPlay } from "lucide-react";
 import { useEffect, useRef, useState, Suspense } from "react";
 
 // Define available player mirrors
@@ -76,9 +76,10 @@ function MoviePlayer() {
   
   // State for current mirror
   const [currentMirrorIndex, setCurrentMirrorIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [showMirrorSelector, setShowMirrorSelector] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sort mirrors by priority
   const sortedMirrors = [...PLAYER_MIRRORS].sort((a, b) => a.priority - b.priority);
@@ -96,18 +97,13 @@ function MoviePlayer() {
     console.log("Current Mirror:", currentMirror.name);
     console.log("Player URL:", playerUrl);
 
-    // Reset loading state when mirror changes
-    setIsLoading(true);
     setHasError(false);
 
     // Listen for messages from the iframe
     const handleMessage = (event: MessageEvent) => {
-      console.log("Message from player:", event.data);
-
       // Handle progress tracking (if supported by the player)
       if (event.data?.type === "PLAYER_EVENT") {
         const { event: playerEvent, currentTime, duration } = event.data.data;
-        console.log(`Player event: ${playerEvent} at ${currentTime}/${duration}`);
         
         // Save progress
         if (movieId) {
@@ -129,7 +125,7 @@ function MoviePlayer() {
     // Handle escape key to go back
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        router.back();
+        router.push('/movies');
       }
     };
 
@@ -141,14 +137,30 @@ function MoviePlayer() {
     };
   }, [movieId, imdbId, playerUrl, currentMirror, router]);
 
-  const handleIframeLoad = () => {
-    setIsLoading(false);
-    setHasError(false);
-  };
+  // Handle idle mouse to hide controls
+  useEffect(() => {
+    const handleMouseMove = () => {
+      setShowControls(true);
+      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+      controlsTimeoutRef.current = setTimeout(() => {
+        setShowControls(false);
+      }, 3000); // Hide after 3 seconds of inactivity
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    // Initial timeout
+    controlsTimeoutRef.current = setTimeout(() => {
+      setShowControls(false);
+    }, 3000);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
+    };
+  }, []);
 
   const handleIframeError = () => {
     console.error("Iframe failed to load");
-    setIsLoading(false);
     setHasError(true);
   };
 
@@ -159,11 +171,6 @@ function MoviePlayer() {
     }
   };
 
-  const tryNextMirror = () => {
-    const nextIndex = (currentMirrorIndex + 1) % sortedMirrors.length;
-    switchMirror(nextIndex);
-  };
-
   if (!movieId) {
     return (
       <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
@@ -171,7 +178,7 @@ function MoviePlayer() {
           <AlertCircle className="w-16 h-16 mx-auto mb-4 text-red-500" />
           <p className="text-xl font-raleway">Invalid movie ID</p>
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push('/movies')}
             className="mt-4 px-6 py-2 bg-serenya-primary hover:bg-serenya-accent rounded-lg font-raleway transition-colors"
           >
             Go Back
@@ -182,105 +189,9 @@ function MoviePlayer() {
   }
 
   return (
-    <div className="fixed inset-0 bg-black z-50 flex flex-col">
-      {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/80 to-transparent p-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 px-4 py-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors text-white font-raleway"
-          >
-            <X className="w-5 h-5" />
-            Close
-          </button>
-          
-          <div className="flex items-center gap-4">
-            {title && (
-              <h1 className="text-white font-raleway font-semibold text-lg max-w-md truncate">
-                {decodeURIComponent(title)}
-              </h1>
-            )}
-          </div>
-
-          {/* Mirror Selector */}
-          <div className="relative">
-            <button
-              onClick={() => setShowMirrorSelector(!showMirrorSelector)}
-              className="flex items-center gap-2 px-4 py-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors text-white font-raleway text-sm"
-            >
-              <RefreshCw className="w-4 h-4" />
-              {currentMirror.name}
-            </button>
-
-            {showMirrorSelector && (
-              <div className="absolute right-0 mt-2 bg-neutral-900 rounded-lg shadow-xl overflow-hidden min-w-[150px]">
-                {sortedMirrors.map((mirror, index) => (
-                  <button
-                    key={mirror.id}
-                    onClick={() => switchMirror(index)}
-                    className={`w-full px-4 py-3 text-left font-raleway text-sm transition-colors ${
-                      index === currentMirrorIndex
-                        ? "bg-serenya-primary text-white"
-                        : "text-white/80 hover:bg-neutral-800"
-                    }`}
-                  >
-                    {mirror.name}
-                    {index === currentMirrorIndex && (
-                      <span className="ml-2 text-xs">(Active)</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Loading Indicator */}
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-20">
-          <div className="text-center">
-            <RefreshCw className="w-12 h-12 text-serenya-primary animate-spin mx-auto mb-4" />
-            <p className="text-white font-raleway">Loading player...</p>
-            <p className="text-white/60 font-raleway text-sm mt-2">
-              Using {currentMirror.name}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Error State */}
-      {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-20">
-          <div className="text-center max-w-md px-4">
-            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-white text-xl font-raleway font-bold mb-2">
-              Failed to load player
-            </h2>
-            <p className="text-white/70 font-raleway mb-6">
-              The current mirror ({currentMirror.name}) is not responding. Try switching to another mirror.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={tryNextMirror}
-                className="px-6 py-3 bg-serenya-primary hover:bg-serenya-accent rounded-lg font-raleway font-bold transition-colors text-white flex items-center gap-2"
-              >
-                <RefreshCw className="w-5 h-5" />
-                Try Next Mirror
-              </button>
-              <button
-                onClick={() => router.back()}
-                className="px-6 py-3 bg-neutral-800 hover:bg-neutral-700 rounded-lg font-raleway font-bold transition-colors text-white"
-              >
-                Go Back
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Player */}
-      <div className="flex-1 w-full h-full">
+    <div className="fixed inset-0 bg-black z-50 flex flex-col overflow-hidden">
+      {/* Background Player */}
+      <div className="absolute inset-0 z-0">
         <iframe
           ref={iframeRef}
           src={playerUrl}
@@ -288,10 +199,146 @@ function MoviePlayer() {
           allowFullScreen
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           title={title ? decodeURIComponent(title) : "Movie Player"}
-          onLoad={handleIframeLoad}
           onError={handleIframeError}
         />
       </div>
+
+      {/* Cinematic UI Overlay */}
+      <div 
+        className={`absolute inset-0 z-10 pointer-events-none transition-all duration-500 ease-in-out ${
+          showControls ? "bg-gradient-to-b from-black/70 via-transparent to-black/70 opacity-100" : "opacity-0"
+        }`}
+      >
+        {/* Top Left: Close Button */}
+        <div className="absolute top-6 left-6 md:top-8 md:left-8 pointer-events-auto">
+          <button
+            onClick={() => router.push('/movies')}
+            className="group flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
+            title="Close Player"
+          >
+            <X className="w-6 h-6 text-white group-hover:text-red-400 transition-colors" />
+          </button>
+        </div>
+
+        {/* Top Right: Server Selector */}
+        <div className="absolute top-6 right-6 md:top-8 md:right-8 pointer-events-auto flex flex-col items-end">
+          <button
+            onClick={() => setShowMirrorSelector(!showMirrorSelector)}
+            className="group flex items-center gap-3 px-5 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all duration-300 shadow-xl"
+          >
+            <span className="text-white/90 font-raleway font-medium text-sm hidden md:block">
+              Server: <span className="text-serenya-accent font-bold">{currentMirror.name}</span>
+            </span>
+            <Server className="w-5 h-5 text-white/90 group-hover:text-serenya-accent transition-colors" />
+          </button>
+
+          {/* Dropdown */}
+          <div 
+            className={`mt-3 w-48 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 origin-top-right -mr-2 ${
+              showMirrorSelector ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-4 pointer-events-none"
+            }`}
+          >
+            <div className="p-2 space-y-1">
+              {sortedMirrors.map((mirror, index) => (
+                <button
+                  key={mirror.id}
+                  onClick={() => switchMirror(index)}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-raleway text-sm transition-all ${
+                    index === currentMirrorIndex
+                      ? "bg-serenya-primary text-white font-medium"
+                      : "text-white/70 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <MonitorPlay className="w-3.5 h-3.5" />
+                    {mirror.name}
+                  </span>
+                  {index === currentMirrorIndex && (
+                    <div className="w-1.5 h-1.5 rounded-full bg-white box-shadow-glow" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Left: Title Info */}
+        <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 pointer-events-auto max-w-2xl">
+          {title && (
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white backdrop-blur-sm border border-white/5 uppercase tracking-wider shadow-sm">
+                  Movies
+                </span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-serenya-primary/80 text-white backdrop-blur-sm border border-white/5 uppercase tracking-wider shadow-sm">
+                  HD
+                </span>
+              </div>
+              <h1 className="text-white font-raleway font-bold text-2xl md:text-3xl lg:text-4xl drop-shadow-2xl tracking-tight leading-none">
+                {decodeURIComponent(title)}
+              </h1>
+              <div className="flex items-center gap-2 text-white/60 font-raleway text-sm mt-3">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span className="leading-none pt-0.5">
+                    Watching on <span className="text-white/90 font-medium">{currentMirror.name}</span>
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom Right: Quick Actions (Reload/Refresh) */}
+        <div className="absolute bottom-6 right-6 md:bottom-10 md:right-10 pointer-events-auto">
+             <button
+                onClick={() => {
+                    const iframe = iframeRef.current;
+                    if (iframe) {
+                        iframe.src = iframe.src; // Reload iframe
+                    }
+                }}
+                className="group p-3 rounded-full bg-white/5 backdrop-blur-md border border-white/5 hover:bg-white/10 transition-all duration-300 text-white/50 hover:text-white shadow-xl"
+                title="Reload Stream"
+              >
+                <RefreshCw className="w-5 h-5 group-active:rotate-180 transition-transform duration-500" />
+            </button>
+        </div>
+      </div>
+
+      {/* Error State Overlay */}
+      {hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/90 z-20">
+          <div className="text-center max-w-md px-6">
+            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-6" />
+            <h2 className="text-white text-2xl font-raleway font-bold mb-3">
+              Stream Unavailable
+            </h2>
+            <p className="text-white/60 font-raleway mb-8 leading-relaxed">
+              We couldn't load the stream from <strong>{currentMirror.name}</strong>. Please try switching to a different server.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => {
+                    const nextIndex = (currentMirrorIndex + 1) % sortedMirrors.length;
+                    switchMirror(nextIndex);
+                }}
+                className="px-8 py-3 bg-serenya-primary hover:bg-serenya-accent rounded-xl font-raleway font-semibold transition-all shadow-lg hover:shadow-serenya-primary/25 text-white flex items-center justify-center gap-2"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Try Next Server
+              </button>
+              <button
+                onClick={() => router.push('/movies')}
+                className="px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-raleway font-medium transition-colors text-white"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -300,10 +347,7 @@ export default function MoviePlayerPage() {
   return (
     <Suspense fallback={
       <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
-        <div className="text-center">
-          <RefreshCw className="w-12 h-12 text-serenya-primary animate-spin mx-auto mb-4" />
-          <p className="text-white font-raleway">Loading player...</p>
-        </div>
+        {/* Minimal loader if suspense triggers, but we try to avoid custom preloaders */}
       </div>
     }>
       <MoviePlayer />
