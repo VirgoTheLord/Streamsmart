@@ -1,7 +1,7 @@
 "use client";
 
 import { Movie } from "@/lib/types/movie";
-import { Star, Play } from "lucide-react";
+import { Star } from "lucide-react";
 import Image from "next/image";
 
 interface MovieCardProps {
@@ -17,42 +17,50 @@ export function MovieCard({ movie, onClick }: MovieCardProps) {
   return (
     <div
       onClick={onClick}
-      className="group relative cursor-pointer rounded-xl overflow-hidden bg-neutral-900 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+      className="group cursor-pointer flex flex-col gap-4 perspective-1000"
+      style={{ perspective: "500px" }}
     >
-      {/* Movie Poster */}
-      <div className="relative aspect-[2/3] w-full overflow-hidden">
-        <Image
-          src={imageUrl}
-          alt={movie.title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
-          unoptimized
-        />
+      {/* 3D Image Container */}
+      <div className="relative w-full aspect-[2/3] transition-all duration-500 ease-out transform-style-3d group-hover:transform-none shadow-xl hover:shadow-2xl"
+           style={{ transform: "rotateY(12deg)" }}>
         
-        {/* Overlay on Hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-            <Play className="w-16 h-16 text-white" fill="white" />
-          </div>
-        </div>
-
-        {/* Rating Badge */}
-        <div className="absolute top-2 right-2 bg-black/80 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center gap-1">
-          <Star className="w-4 h-4 text-yellow-400" fill="currentColor" />
-          <span className="text-white text-sm font-semibold">
-            {movie.vote_average.toFixed(1)}
-          </span>
+        {/* Poster Image */}
+        <div className="relative w-full h-full rounded-xl overflow-hidden bg-neutral-900">
+          <Image
+            src={imageUrl}
+            alt={movie.title}
+            fill
+            className="object-cover"
+            unoptimized
+          />
+          {/* Transparent Overlay Layer */}
+          <div className="absolute inset-0 bg-black/20 transition-opacity duration-300 group-hover:opacity-0" />
+          
+          {/* Shine effect overlay */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
       </div>
 
-      {/* Movie Info */}
-      <div className="p-4">
-        <h3 className="font-raleway font-bold text-white text-lg line-clamp-1 mb-1">
+      {/* External Info Info */}
+      <div className="px-1 mt-2">
+        <h3 className="font-raleway font-bold text-neutral-900 dark:text-white text-lg leading-tight line-clamp-1 mb-1 drop-shadow-md">
           {movie.title}
         </h3>
-        <p className="text-white/60 text-sm font-raleway">
-          {movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}
-        </p>
+        
+        <div className="flex items-center gap-2 text-sm">
+             <span className="text-neutral-500 dark:text-white/40 font-raleway font-medium">
+                {movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}
+            </span>
+            
+            <span className="text-neutral-300 dark:text-white/20">•</span>
+
+            <div className="flex items-center gap-1">
+                <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+                <span className="text-neutral-900 dark:text-white font-bold font-raleway">
+                {movie.vote_average.toFixed(1)}
+                </span>
+            </div>
+        </div>
       </div>
     </div>
   );

@@ -8,7 +8,9 @@ import { MovieCard } from "@/components/movies/movie-card";
 import { MovieModal } from "@/components/movies/movie-modal";
 import { Input } from "@/components/ui/input";
 import { MoviesNavbar } from "@/components/movies-navbar";
+import { DraggableScroll } from "@/components/ui/draggable-scroll";
 import { MoviesHeroSlider } from "@/components/movies/movies-hero-slider";
+import { ArrowUpRight } from "lucide-react";
 
 export default function MoviesPage() {
   const router = useRouter();
@@ -86,8 +88,7 @@ export default function MoviesPage() {
               </>
             ) : (
               <>
-                <TrendingUp className="w-6 h-6 text-serenya-accent" />
-                <h3 className="text-2xl font-bold font-raleway">Trending This Week</h3>
+                <h3 className="text-2xl font-bold font-raleway">What's New This Week In Cinema.</h3>
               </>
             )}
           </div>
@@ -99,17 +100,28 @@ export default function MoviesPage() {
             </div>
           )}
 
-          {/* Movies Grid */}
+          {/* Movies Carousel */}
           {!isLoading && displayMovies && displayMovies.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-              {displayMovies.map((movie) => (
-                <MovieCard
-                  key={movie.id}
-                  movie={movie}
-                  onClick={() => setSelectedMovieId(movie.id)}
-                />
+            <DraggableScroll className="gap-4 py-4 -mx-8 px-8">
+              {displayMovies.slice(0, 10).map((movie) => (
+                <div key={movie.id} className="min-w-[160px] sm:min-w-[200px] md:min-w-[240px] flex-shrink-0 select-none text-left">
+                  <MovieCard
+                    movie={movie}
+                    onClick={() => setSelectedMovieId(movie.id)}
+                  />
+                </div>
               ))}
-            </div>
+              
+              {/* See More Section */}
+              <div className="min-w-[160px] sm:min-w-[200px] md:min-w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="flex flex-col items-center justify-center">
+                  <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center ">SEE <br />MORE</span>
+                </div>
+                 <button className="w-20 h-20 rounded-full bg-neutral-900 dark:bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110">
+                    <ArrowUpRight className="w-8 h-8 text-white dark:text-black" />
+                 </button>
+              </div>
+            </DraggableScroll>
           )}
 
           {/* No Results */}
