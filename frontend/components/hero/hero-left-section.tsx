@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DiagonalLink } from "@/components/ui/diagonal-link";
@@ -8,13 +8,15 @@ import { Search, Globe, Paperclip, Mic, ArrowRight, ChevronRight } from "lucide-
 
 export function HeroLeftSection() {
   const [showTooltip, setShowTooltip] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="relative bg-white dark:bg-[#020817] h-full flex flex-col">
-      {/* StreamSmart Text */}
-      <div className="px-4 sm:px-6 pt-3 sm:pt-4 pb-0 flex-shrink-0">
-        <h1 className="text-[clamp(24px,5vw,60px)] font-medium leading-[0.75] tracking-wider font-star">
-          STREAMSMART<sup className="pl-1 text-[0.25em] font-normal align-super">©</sup>
+    <div ref={containerRef} className="relative bg-white dark:bg-[#020817] h-full flex flex-col">
+      {/* StreamSmart Text - Removed Top Padding to fix position */}
+      <div className="px-4 sm:px-6 pt-0 sm:pt-1 pb-0 flex-shrink-0">
+        <h1 className="text-[clamp(24px,5vw,60px)] font-medium leading-[0.9] tracking-wider font-star overflow-hidden">
+          STREAMSMART
+          <sup className="pl-1 text-[0.25em] font-normal align-super">©</sup>
         </h1>
         <div className="flex items-center gap-2 mt-2 sm:mt-3 ml-0.5">
           <span className="text-[11px] font-light">(explore all)</span>
@@ -111,7 +113,7 @@ export function HeroLeftSection() {
             </div>
           </div>
 
-          {/* Text Overlays */}
+          {/* Text Overlays - Slogan (Static) */}
           <div className="hidden lg:block absolute bottom-3 sm:bottom-4 left-4 sm:left-5 text-white font-light">
             <div className="text-[clamp(18px,3.5vw,30px)] leading-[1.1] tracking-tight font-star">
               SMART SEARCH.

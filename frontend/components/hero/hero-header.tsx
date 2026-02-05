@@ -1,12 +1,38 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useTheme } from "next-themes";
 import { Infinity, Sun, Moon } from "lucide-react";
+import gsap from "gsap";
 
 export function HeroHeader() {
+  const headerTextRef = useRef<HTMLHeadingElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Animate Main Title - Staggered Reveal
+      const words = headerTextRef.current?.querySelectorAll(".header-word");
+      if (words && words.length > 0) {
+        // Set initial state
+        gsap.set(words, { y: -30, opacity: 0 });
+
+        // Animate TO visible
+        gsap.to(words, {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.1,
+          ease: "power2.out",
+          delay: 5.4 // Sync with Preloader exit (slightly after STREAMSMART)
+        });
+      }
+    }, containerRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="px-4 py-6 sm:px-6 sm:py-8 md:px-10 md:py-4 w-full max-w-[1600px] mx-auto">
+    <div ref={containerRef} className="px-4 py-6 sm:px-6 sm:py-8 md:px-10 md:py-4 w-full max-w-[1600px] mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 md:gap-8 items-start">
         
         {/* Column 1: Meta Info (EST, Mission) */}
@@ -37,9 +63,24 @@ export function HeroHeader() {
 
         {/* Column 3: Main Title */}
         <div className="md:col-span-5 flex flex-col justify-center pt-2">
-          <h1 className="font-raleway text-[clamp(28px,5.5vw,54px)] leading-[1.1] sm:leading-[1] tracking-tight text-center md:text-left text-black dark:text-white uppercase">
-            Where Streaming<br />
-            Meets Intelligence.
+          <h1 ref={headerTextRef} className="font-raleway text-[clamp(28px,5.5vw,54px)] leading-[0.9] sm:leading-[1] tracking-tight text-center md:text-left text-black dark:text-white uppercase">
+            {/* Split "Where Streaming" */}
+            <div className="inline-block">
+              {"Where Streaming".split(" ").map((word, i) => (
+                <span key={i} className="header-word inline-block mr-[0.25em]" style={{opacity: 0}}>
+                  {word}
+                </span>
+              ))}
+            </div>
+            <br />
+            {/* Split "Meets Intelligence." */}
+            <div className="inline-block whitespace-nowrap">
+              {"Meets Intelligence.".split(" ").map((word, i) => (
+                <span key={i + 2} className="header-word inline-block mr-[0.25em]" style={{opacity: 0}}>
+                  {word}
+                </span>
+              ))}
+            </div>
           </h1>
         </div>
 

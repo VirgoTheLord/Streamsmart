@@ -42,14 +42,14 @@ export function HeroRightSection() {
 
   return (
     <div className="relative h-full min-h-[300px] lg:min-h-0">
-      <div className="relative bg-serenya-primary dark:bg-serenya-accent h-[95%] lg:h-[97%] rounded-sm flex items-center justify-center z-10 overflow-hidden mx-4 lg:mx-0 my-3 lg:my-0">
+      <div ref={containerRef} className="relative bg-serenya-primary dark:bg-serenya-accent h-[95%] lg:h-[97%] rounded-sm flex items-center justify-center z-10 overflow-hidden mx-4 lg:mx-0 my-3 lg:my-0">
+        
         <div className="absolute top-3 sm:top-4 right-3 sm:right-4 text-white/25 text-[10px] sm:text-[11px] font-light tracking-wide z-20">
           (AI)
         </div>
 
         {/* Movie Poster Carousel */}
         <div 
-          ref={containerRef}
           className="relative w-full h-full flex items-center justify-center overflow-hidden -mt-6 sm:-mt-8 md:-mt-8"
         >
           {loading ? (
