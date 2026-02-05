@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 export function Preloader() {
@@ -12,7 +12,7 @@ export function Preloader() {
 
   const fullText = "STREAMSMART";
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Lock scroll and force top position
     document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
@@ -22,6 +22,8 @@ export function Preloader() {
         onComplete: () => {
           document.body.style.overflow = ""; // Restore scroll before unmounting/hiding
           setComplete(true);
+          // Set cookie for next server-side render
+          document.cookie = "hasVisited=true; path=/; max-age=3600";
         }
       });
 
@@ -147,9 +149,9 @@ export function Preloader() {
       {/* Content */}
       <div 
         ref={textRef}
-        className="relative z-10 flex items-center justify-center"
+        className="relative z-10 flex items-center justify-center "
       >
-         <h1 className="font-star text-[clamp(40px,6vw,90px)] font-bold tracking-widest flex items-center justify-center">
+         <h1 className="font-star text-[clamp(40px,6vw,90px)] font-bold tracking-widest flex items-center justify-center -mt-20">
             {fullText.split("").map((char, i) => (
                 <span 
                   key={i} 

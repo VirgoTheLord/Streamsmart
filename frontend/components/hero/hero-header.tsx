@@ -1,19 +1,40 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useLayoutEffect, useState, useRef, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Infinity, Sun, Moon } from "lucide-react";
 import gsap from "gsap";
 
-export function HeroHeader() {
+interface HeroHeaderProps {
+  showAnimation?: boolean;
+}
+
+export function HeroHeader({ showAnimation = true }: HeroHeaderProps) {
   const headerTextRef = useRef<HTMLHeadingElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      // Immediate check: if animation disabled, show text instantly
+      if (!showAnimation) {
+        const words = headerTextRef.current?.querySelectorAll(".header-word");
+        if (words) {
+          gsap.set(words, { y: 0, opacity: 1 });
+        }
+        return;
+      }
+      
       // Animate Main Title - Staggered Reveal
       const words = headerTextRef.current?.querySelectorAll(".header-word");
       if (words && words.length > 0) {
+        const hasVisited = sessionStorage.getItem("hasVisited");
+        const shouldAnimate = !hasVisited;
+
+        if (!shouldAnimate) {
+             gsap.set(words, { y: 0, opacity: 1 });
+             return;
+        }
+
         // Set initial state
         gsap.set(words, { y: -30, opacity: 0 });
 
@@ -24,7 +45,7 @@ export function HeroHeader() {
           duration: 1,
           stagger: 0.1,
           ease: "power2.out",
-          delay: 5.4 // Sync with Preloader exit (slightly after STREAMSMART)
+          delay: 4.2 // Sync with Preloader exit (slightly before shutters open fully)
         });
       }
     }, containerRef);
