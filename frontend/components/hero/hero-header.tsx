@@ -5,25 +5,12 @@ import { useTheme } from "next-themes";
 import { Infinity, Sun, Moon } from "lucide-react";
 import gsap from "gsap";
 
-interface HeroHeaderProps {
-  showAnimation?: boolean;
-}
-
-export function HeroHeader({ showAnimation = true }: HeroHeaderProps) {
+export function HeroHeader() {
   const headerTextRef = useRef<HTMLHeadingElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Immediate check: if animation disabled, show text instantly
-      if (!showAnimation) {
-        const words = headerTextRef.current?.querySelectorAll(".header-word");
-        if (words) {
-          gsap.set(words, { y: 0, opacity: 1 });
-        }
-        return;
-      }
-      
       // Animate Main Title - Staggered Reveal
       const words = headerTextRef.current?.querySelectorAll(".header-word");
       if (words && words.length > 0) {

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Raleway} from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -34,8 +36,6 @@ export const metadata: Metadata = {
   keywords: ["streaming", "movies", "AI", "search", "StreamSmart", "entertainment"],
 };
 
-import { ThemeProvider } from "@/components/theme-provider";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -46,6 +46,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${hatolie.variable} ${raleway.variable} ${star.variable}  antialiased`}
       >
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (sessionStorage.getItem("hasVisited")) {
+                  document.documentElement.classList.add("no-preloader");
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
         <ThemeProvider
             attribute="class"
             defaultTheme="system"

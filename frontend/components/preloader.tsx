@@ -13,17 +13,30 @@ export function Preloader() {
   const fullText = "STREAMSMART";
 
   useLayoutEffect(() => {
+    // Immediate check to skip if visited
+    if (document.documentElement.classList.contains("no-preloader")) {
+      setComplete(true);
+      return;
+    }
+
     // Lock scroll and force top position
     document.body.style.overflow = "hidden";
     window.scrollTo(0, 0);
 
     const ctx = gsap.context(() => {
+      const hasVisited = sessionStorage.getItem("hasVisited");
+      
+      if (hasVisited) {
+        setComplete(true);
+        document.body.style.overflow = "";
+        return;
+      }
+
       const tl = gsap.timeline({
         onComplete: () => {
           document.body.style.overflow = ""; // Restore scroll before unmounting/hiding
           setComplete(true);
-          // Set cookie for next server-side render
-          document.cookie = "hasVisited=true; path=/; max-age=3600";
+          sessionStorage.setItem("hasVisited", "true");
         }
       });
 
@@ -132,18 +145,18 @@ export function Preloader() {
   return (
     <div 
       ref={containerRef} 
-      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden pointer-events-none"
+      className="preloader-container fixed inset-0 z-[100] flex items-center justify-center overflow-hidden pointer-events-none"
     >
       {/* Left Shutter */}
       <div 
         ref={leftShutterRef}
-        className="absolute top-0 left-0 w-[51%] h-full bg-[#020817] z-0" 
+        className="absolute top-0 left-0 w-[51%] h-full bg-white dark:bg-[#020817] z-0" 
       />
       
       {/* Right Shutter */}
       <div 
         ref={rightShutterRef}
-        className="absolute top-0 right-0 w-[51%] h-full bg-[#020817] z-0" 
+        className="absolute top-0 right-0 w-[51%] h-full bg-white dark:bg-[#020817] z-0" 
       />
 
       {/* Content */}
@@ -156,7 +169,7 @@ export function Preloader() {
                 <span 
                   key={i} 
                   className={`letter inline-block origin-center whitespace-pre ${
-                    (i === 0 || i === 6) ? "text-white z-10" : "text-white"
+                    (i === 0 || i === 6) ? "text-serenya-dark dark:text-white z-10" : "text-serenya-dark dark:text-white"
                   }`}
                 >
                     {char}

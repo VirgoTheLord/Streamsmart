@@ -80,7 +80,7 @@ export function HeroRightSection() {
               {/* Current poster (center, large) */}
               <div 
                 className={`relative z-20 transition-all duration-600 ${
-                  isTransitioning ? 'scale-95 opacity-90' : 'scale-100 opacity-100'
+                  isTransitioning ? 'scale-80 opacity-90' : 'scale-90 opacity-100'
                 }`}
               >
                 {movies[currentIndex]?.poster_path && (
