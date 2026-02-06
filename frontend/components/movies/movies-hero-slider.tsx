@@ -9,20 +9,87 @@ export function MoviesHeroSlider() {
   const { data: trendingData, loading } = useFetchMovies("/trending/movie/week", 1);
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Track replacement poster URLs by Movie ID
+  const [replacementPosters, setReplacementPosters] = useState<Record<number, string>>({});
+  // Track usage count to prevent loops (retry limit)
+  const [retryCounts, setRetryCounts] = useState<Record<number, number>>({});
+
   const movies = trendingData?.results || [];
 
-  // Auto-scroll effect removed
-  /*
-  useEffect(() => {
-    if (movies.length === 0) return;
+  const fetchRandomPoster = async (movieId: number) => {
+    try {
+      // Fetch a random page of trending movies (1-10) for more variety
+      const randomPage = Math.floor(Math.random() * 10) + 1; 
+      const res = await fetch(
+        `https://api.themoviedb.org/3/trending/movie/week?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${randomPage}`
+      );
+      const data = await res.json();
+      
+      // Get all currently used replacement posters to ensure uniqueness
+      const usedPosters = Object.values(replacementPosters);
+      
+      // Filter for valid movies: 
+      // 1. Has poster
+      // 2. Not the same movie
+      // 3. Poster not already used as a replacement elsewhere
+      // 4. Poster is not the same as the current failed one (if applicable)
+      const currentFailedPoster = replacementPosters[movieId] || null;
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % movies.length);
-    }, 3000);
+      const validMovies = data.results?.filter((m: any) => 
+        m.poster_path && 
+        m.id !== movieId && 
+        !usedPosters.includes(m.poster_path) &&
+        m.poster_path !== currentFailedPoster
+      ) || [];
+      
+      if (validMovies.length > 0) {
+        const randomMovie = validMovies[Math.floor(Math.random() * validMovies.length)];
+        
+        setReplacementPosters((prev) => ({
+          ...prev,
+          [movieId]: randomMovie.poster_path 
+        }));
+      } else {
+        // If no unique poster found in this batch, try one more time or just give up for this cycle
+        // to avoid thrashing.
+      }
+    } catch (e) {
+      console.error("Failed to fetch fallback poster", e);
+    }
+  };
 
-    return () => clearInterval(interval);
-  }, [movies.length]);
-  */
+  const handleImageError = (movieId: number) => {
+    setRetryCounts(prev => {
+        const currentCount = prev[movieId] || 0;
+        if (currentCount < 3) { // Max 3 retries
+            // Trigger fetch
+            fetchRandomPoster(movieId);
+            return { ...prev, [movieId]: currentCount + 1 };
+        } else {
+            // Give up and show placeholder (by setting invalid path that falls back to placeholder logic or specific flag)
+            // Actually, getPosterSrc handles fallback if replacementPosters[movieId] is still failing. 
+            // We can explicitly set it to a placeholder value or just stop updating.
+            // If we stop updating, it keeps the broken image. 
+            // Let's set it to empty string to force placeholder?
+            // Or better, set replacement to a known safe internal placeholder to stop network requests.
+            setReplacementPosters(prev => ({ ...prev, [movieId]: "PLACEHOLDER" }));
+            return prev;
+        }
+    });
+  };
+
+  const getPosterSrc = (movie: any) => {
+     const replacement = replacementPosters[movie.id];
+     if (replacement) {
+        if (replacement === "PLACEHOLDER") return '/placeholder-movie.svg'; // Safe local fallback
+        return `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w780${replacement}`;
+     }
+     if (movie.poster_path) {
+        return `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w780${movie.poster_path}`;
+     }
+     return '/placeholder-movie.svg';
+  };
 
   if (loading || movies.length === 0) return null;
 
@@ -108,17 +175,13 @@ export function MoviesHeroSlider() {
             >
               <div className="relative w-64 h-96 sm:w-80 sm:h-[480px] rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-neutral-900">
                 <Image
-                  src={movie.poster_path ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w780${movie.poster_path}` : 'https://placehold.co/600x900/1a1a1a/ffffff?text=No+Poster'}
+                  src={getPosterSrc(movie)}
                   alt={movie.title}
                   fill
                   className="object-cover"
                   priority={true}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  onError={(e) => {
-                    // Fallback if image fails to load
-                    const target = e.target as HTMLImageElement;
-                    target.src = 'https://placehold.co/600x900/1a1a1a/ffffff?text=No+Poster';
-                  }}
+                  onError={() => handleImageError(movie.id)}
                 />
                 {/* Reduced overlay opacity */}
                 <div className="absolute inset-0 bg-black/10" />

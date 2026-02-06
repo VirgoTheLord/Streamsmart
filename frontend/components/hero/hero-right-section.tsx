@@ -40,6 +40,60 @@ export function HeroRightSection() {
     }
   }, [currentIndex, movies]);
 
+  // Track replacement poster URLs by Movie ID
+  const [replacementPosters, setReplacementPosters] = useState<Record<number, string>>({});
+
+  const fetchRandomPoster = async (movieId: number) => {
+    try {
+      // Fetch a random page of trending movies (1-5) to get variety
+      const randomPage = Math.floor(Math.random() * 5) + 1;
+      const res = await fetch(
+        `https://api.themoviedb.org/3/trending/movie/week?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}&page=${randomPage}`
+      );
+      const data = await res.json();
+      
+      // Filter for movies with posters
+      const validMovies = data.results?.filter((m: any) => m.poster_path && m.id !== movieId) || [];
+      
+      if (validMovies.length > 0) {
+        // Pick a random movie from the results
+        const randomMovie = validMovies[Math.floor(Math.random() * validMovies.length)];
+        const newPosterPath = randomMovie.poster_path;
+        
+        // Update state with the new URL
+        setReplacementPosters((prev) => ({
+          ...prev,
+          [movieId]: `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}`, // We'll append size in getPosterSrc, wait.
+          // Actually, store the full path or just the poster_path?
+          // Let's store the poster_path so we can resize dynamically.
+          [movieId]: newPosterPath 
+        }));
+      }
+    } catch (e) {
+      console.error("Failed to fetch fallback poster", e);
+    }
+  };
+
+  const handleImageError = (movieId: number) => {
+    // Only fetch if we haven't already replaced it to avoid loops
+    if (!replacementPosters[movieId]) {
+       fetchRandomPoster(movieId);
+    }
+  };
+
+  const getPosterSrc = (movie: any, size: string) => {
+    // If we have a replacement, use it
+    if (replacementPosters[movie.id]) {
+      return `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/${size}${replacementPosters[movie.id]}`;
+    }
+    // Otherwise use original
+    if (movie?.poster_path) {
+      return `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/${size}${movie.poster_path}`;
+    }
+    // Temporary failsafe if both fail (though simple fallback logic covers this via replacement)
+    return ""; 
+  };
+
   return (
     <div className="relative h-full min-h-[300px] lg:min-h-0">
       <div ref={containerRef} className="relative bg-serenya-primary dark:bg-serenya-accent h-[95%] lg:h-[97%] rounded-sm flex items-center justify-center z-10 overflow-hidden mx-4 lg:mx-0 my-3 lg:my-0">
@@ -63,18 +117,22 @@ export function HeroRightSection() {
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Previous poster (left, faded) */}
               <div className="absolute left-4 sm:left-8 z-10 opacity-35 scale-80 transition-all duration-600">
-                {movies[(currentIndex - 1 + movies.length) % movies.length]?.poster_path && (
-                  <div className="relative w-28 sm:w-36 md:w-44 h-42 sm:h-54 md:h-66 rounded-lg overflow-hidden shadow-2xl">
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w500${movies[(currentIndex - 1 + movies.length) % movies.length].poster_path}`}
-                      alt={movies[(currentIndex - 1 + movies.length) % movies.length].title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 176px"
-                      loading="lazy"
-                    />
-                  </div>
-                )}
+                {(() => {
+                   const prevMovie = movies[(currentIndex - 1 + movies.length) % movies.length];
+                   return prevMovie && (
+                    <div className="relative w-28 sm:w-36 md:w-44 h-42 sm:h-54 md:h-66 rounded-lg overflow-hidden shadow-2xl">
+                      <Image
+                        src={getPosterSrc(prevMovie, "w500")}
+                        alt={prevMovie.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 176px"
+                        loading="lazy"
+                        onError={() => handleImageError(prevMovie.id)}
+                      />
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Current poster (center, large) */}
@@ -83,51 +141,59 @@ export function HeroRightSection() {
                   isTransitioning ? 'scale-80 opacity-90' : 'scale-90 opacity-100'
                 }`}
               >
-                {movies[currentIndex]?.poster_path && (
-                  <div className="relative w-52 sm:w-64 md:w-80 h-78 sm:h-96 md:h-[480px] rounded-lg overflow-hidden shadow-2xl ring-2 ring-white/20">
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w780${movies[currentIndex].poster_path}`}
-                      alt={movies[currentIndex].title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 208px, (max-width: 768px) 256px, 320px"
-                      priority
-                    />
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    
-                    {/* Rating - Top Right (Minimal) */}
-                    <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center gap-1">
-                      <span className="text-yellow-400 text-sm sm:text-base">★</span>
-                      <span className="text-white font-raleway font-semibold text-sm sm:text-base">
-                        {movies[currentIndex].vote_average.toFixed(1)}
-                      </span>
-                    </div>
+                {(() => {
+                  const currentMovie = movies[currentIndex];
+                  return currentMovie && (
+                    <div className="relative w-52 sm:w-64 md:w-80 h-78 sm:h-96 md:h-[480px] rounded-lg overflow-hidden shadow-2xl ring-2 ring-white/20">
+                      <Image
+                        src={getPosterSrc(currentMovie, "w780")}
+                        alt={currentMovie.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 208px, (max-width: 768px) 256px, 320px"
+                        priority
+                        onError={() => handleImageError(currentMovie.id)}
+                      />
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      
+                      {/* Rating - Top Right (Minimal) */}
+                      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center gap-1">
+                        <span className="text-yellow-400 text-sm sm:text-base">★</span>
+                        <span className="text-white font-raleway font-semibold text-sm sm:text-base">
+                          {currentMovie.vote_average.toFixed(1)}
+                        </span>
+                      </div>
 
-                    {/* Movie Title - Bottom Left */}
-                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-5">
-                      <h3 className="text-white font-raleway font-bold text-sm sm:text-base md:text-lg line-clamp-2">
-                        {movies[currentIndex].title}
-                      </h3>
+                      {/* Movie Title - Bottom Left */}
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-5">
+                        <h3 className="text-white font-raleway font-bold text-sm sm:text-base md:text-lg line-clamp-2">
+                          {currentMovie.title}
+                        </h3>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
 
               {/* Next poster (right, faded) */}
               <div className="absolute right-4 sm:right-8 z-10 opacity-35 scale-80 transition-all duration-600">
-                {movies[(currentIndex + 1) % movies.length]?.poster_path && (
-                  <div className="relative w-28 sm:w-36 md:w-44 h-42 sm:h-54 md:h-66 rounded-lg overflow-hidden shadow-2xl">
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w500${movies[(currentIndex + 1) % movies.length].poster_path}`}
-                      alt={movies[(currentIndex + 1) % movies.length].title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 176px"
-                      loading="lazy"
-                    />
-                  </div>
-                )}
+                {(() => {
+                   const nextMovie = movies[(currentIndex + 1) % movies.length];
+                   return nextMovie && (
+                    <div className="relative w-28 sm:w-36 md:w-44 h-42 sm:h-54 md:h-66 rounded-lg overflow-hidden shadow-2xl">
+                      <Image
+                        src={getPosterSrc(nextMovie, "w500")}
+                        alt={nextMovie.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 176px"
+                        loading="lazy"
+                        onError={() => handleImageError(nextMovie.id)}
+                      />
+                    </div>
+                  );
+                })()}
               </div>
 
               <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">

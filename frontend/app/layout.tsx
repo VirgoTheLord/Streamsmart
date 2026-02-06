@@ -52,6 +52,10 @@ export default function RootLayout({
               try {
                 if (sessionStorage.getItem("hasVisited")) {
                   document.documentElement.classList.add("no-preloader");
+                  // Inject critical CSS immediately to prevent flash before globals.css loads
+                  var style = document.createElement('style');
+                  style.innerHTML = 'html.no-preloader .preloader-container { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }';
+                  document.head.appendChild(style);
                 }
               } catch (e) {}
             `,

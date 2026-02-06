@@ -12,7 +12,7 @@ interface MovieCardProps {
 export function MovieCard({ movie, onClick }: MovieCardProps) {
   const imageUrl = movie.poster_path
     ? `${process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL}/w500${movie.poster_path}`
-    : '/placeholder-movie.png';
+    : '/placeholder-movie.svg';
 
   return (
     <div
