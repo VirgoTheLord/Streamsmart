@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Film, Search, TrendingUp, Home, Loader2, ArrowUpRight, Trophy, Flame } from "lucide-react";
-import { useFetchMovies, useSearchMovies, useFetchMovieDetails } from "@/hooks/useTMDB";
+import { Film, Search, TrendingUp, Home, Loader2, ArrowUpRight, Tv, Sparkles } from "lucide-react";
+import { useFetchMovies, useSearchMovies, useFetchMovieDetails, useFetchTV, useFetchTVDetails, useFetchAnime } from "@/hooks/useTMDB";
 import { MovieCard } from "@/components/movies/movie-card";
 import { MovieModal } from "@/components/movies/movie-modal";
+import { SeriesCard } from "@/components/series/series-card"; 
+import { SeriesModal } from "@/components/series/series-modal";
+import { AnimeCard } from "@/components/anime/anime-card";
+import { AnimeModal } from "@/components/anime/anime-modal";
 import { Input } from "@/components/ui/input";
 import { MoviesNavbar } from "@/components/movies-navbar";
 import { DraggableScroll } from "@/components/ui/draggable-scroll";
@@ -14,20 +18,32 @@ import { MoviesHeroSlider } from "@/components/movies/movies-hero-slider";
 export default function MoviesPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
   
-  // Three sections: Trending, Top Rated, Action
-  const { data: trendingData, loading: trendingLoading } = useFetchMovies("/trending/movie/week", 1);
-  const { data: topRatedData, loading: topRatedLoading } = useFetchMovies("/movie/top_rated", 1);
-  const { data: actionData, loading: actionLoading } = useFetchMovies("/discover/movie?with_genres=28&sort_by=popularity.desc", 1); 
+  // Selection States
+  const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
+  const [selectedSeriesId, setSelectedSeriesId] = useState<number | null>(null);
+  const [selectedAnimeId, setSelectedAnimeId] = useState<number | null>(null);
+  
+  // Data Fetching
+  const { data: trendingMovies, loading: moviesLoading } = useFetchMovies("/trending/movie/week", 1);
+  const { data: trendingSeries, loading: seriesLoading } = useFetchTV("/trending/tv/week", 1);
+  const { data: trendingAnime, loading: animeLoading } = useFetchAnime(1, 'popularity.desc');
 
+  // Search (Movies only for now based on page context, or cross-search? User said "shown in normal movies tab". 
+  // Usually search bar on Movies page searches movies. I'll stick to Movies search to avoid confusion, or maybe generic?)
+  // Let's stick to Movie Search for the "Movies" page search bar, as generic search is complex.
   const { data: searchData, loading: searchLoading } = useSearchMovies(searchQuery, 1);
+  
+  // Details Fetching
   const { data: movieDetails } = useFetchMovieDetails(selectedMovieId);
+  const { data: seriesDetails } = useFetchTVDetails(selectedSeriesId);
+  const { data: animeDetails } = useFetchTVDetails(selectedAnimeId); // Anime uses TV details endpoint
 
   const isSearching = searchQuery.trim().length > 0;
   const displaySearch = searchData?.results;
-  const isLoading = isSearching ? searchLoading : (trendingLoading || topRatedLoading || actionLoading);
+  const isLoading = isSearching ? searchLoading : (moviesLoading || seriesLoading || animeLoading);
 
+  // Watch Handlers
   const handleWatchMovie = (movieId: number, imdbId?: string, title?: string) => {
     const params = new URLSearchParams({
       id: movieId.toString(),
@@ -37,24 +53,27 @@ export default function MoviesPage() {
     router.push(`/player?${params.toString()}`);
   };
 
-  const Section = ({ title, icon: Icon, data, loading }: any) => {
-    if (loading || !data?.results?.length) return null;
-    return (
-        <div className="mb-12">
-            <div className="flex items-center gap-3 mb-6 px-8 max-w-7xl mx-auto">
-                 <h3 className="text-2xl font-bold font-raleway flex items-center gap-2">
-                    {title} <Icon className="w-5 h-5 text-serenya-accent" />
-                </h3>
-            </div>
-            <DraggableScroll className="gap-4 py-4 px-8">
-            {data.results.slice(0, 15).map((movie: any) => (
-              <div key={movie.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
-                <MovieCard
-                  movie={movie}
-                  onClick={() => setSelectedMovieId(movie.id)}
-                />
-              </div>
-            ))}
+  const handleWatchSeries = (seriesId: number, title?: string) => {
+    const params = new URLSearchParams({
+      id: seriesId.toString(),
+      type: 'tv',
+      ...(title && { title: encodeURIComponent(title) }),
+      season: '1',
+      episode: '1'
+    });
+    router.push(`/player?${params.toString()}`);
+  };
+
+  // Sections Wrapper
+  const Section = ({ title, icon: Icon, children }: any) => (
+    <div className="mb-12">
+        <div className="flex items-center gap-3 mb-6 px-8 max-w-7xl mx-auto">
+                <h3 className="text-2xl font-bold font-raleway flex items-center gap-2">
+                {title} <Icon className="w-5 h-5 text-serenya-accent" />
+            </h3>
+        </div>
+        <DraggableScroll className="gap-4 py-4 px-8">
+            {children}
              <div className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
                 <div className="flex flex-col items-center justify-center">
                     <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center leading-none">SEE <br />MORE</span>
@@ -63,10 +82,9 @@ export default function MoviesPage() {
                     <ArrowUpRight className="w-8 h-8 text-white dark:text-black" />
                 </button>
             </div>
-          </DraggableScroll>
-        </div>
-    );
-  };
+        </DraggableScroll>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#000000] text-black dark:text-white">
@@ -135,18 +153,62 @@ export default function MoviesPage() {
              </div>
         ) : (
              <>
-                <Section title="Trending This Week" icon={TrendingUp} data={trendingData} loading={trendingLoading} />
-                <Section title="Top Rated Classics" icon={Trophy} data={topRatedData} loading={topRatedLoading} />
-                <Section title="Action & Thriller" icon={Flame} data={actionData} loading={actionLoading} />
+                {/* 1. Trending Movies */}
+                {trendingMovies?.results?.length > 0 && (
+                    <Section title="Trending Movies" icon={TrendingUp}>
+                        {trendingMovies.results.slice(0, 15).map((movie: any) => (
+                            <div key={movie.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
+                                <MovieCard movie={movie} onClick={() => setSelectedMovieId(movie.id)} />
+                            </div>
+                        ))}
+                    </Section>
+                )}
+
+                {/* 2. Trending Series */}
+                {trendingSeries?.results?.length > 0 && (
+                    <Section title="Trending Series" icon={Tv}>
+                        {trendingSeries.results.slice(0, 15).map((series: any) => (
+                            <div key={series.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
+                                <SeriesCard series={series} onClick={() => setSelectedSeriesId(series.id)} />
+                            </div>
+                        ))}
+                    </Section>
+                )}
+
+                {/* 3. Trending Anime */}
+                {trendingAnime?.results?.length > 0 && (
+                     <Section title="Trending Anime" icon={Sparkles}>
+                        {trendingAnime.results.slice(0, 15).map((anime: any) => (
+                            <div key={anime.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
+                                <AnimeCard anime={anime} onClick={() => setSelectedAnimeId(anime.id)} />
+                            </div>
+                        ))}
+                    </Section>
+                )}
              </>
         )}
       </section>
 
+      {/* Modals */}
       <MovieModal
-        movie={movieDetails || (displaySearch?.find(m => m.id === selectedMovieId) || trendingData?.results?.find((m:any) => m.id === selectedMovieId) || topRatedData?.results?.find((m:any) => m.id === selectedMovieId) || actionData?.results?.find((m:any) => m.id === selectedMovieId) || null)}
+        movie={movieDetails || (displaySearch?.find(m => m.id === selectedMovieId) || trendingMovies?.results?.find((m:any) => m.id === selectedMovieId) || null)}
         isOpen={selectedMovieId !== null}
         onClose={() => setSelectedMovieId(null)}
         onWatchMovie={handleWatchMovie}
+      />
+      
+      <SeriesModal
+        series={seriesDetails || (trendingSeries?.results?.find((s:any) => s.id === selectedSeriesId) || null)}
+        isOpen={selectedSeriesId !== null}
+        onClose={() => setSelectedSeriesId(null)}
+        onWatchSeries={handleWatchSeries}
+      />
+
+      <AnimeModal
+        anime={animeDetails || (trendingAnime?.results?.find((a:any) => a.id === selectedAnimeId) || null)}
+        isOpen={selectedAnimeId !== null}
+        onClose={() => setSelectedAnimeId(null)}
+        onWatch={handleWatchSeries} // Anime shares watch handler with Series (both are 'tv')
       />
     </div>
   );
