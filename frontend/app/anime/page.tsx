@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Loader2, Sparkles, ArrowUpRight, Trophy, Flame, Calendar_1 } from "lucide-react"; // Corrected imports
+import { Search, Loader2, Sparkles, ArrowUpRight } from "lucide-react";
 import { useFetchAnime, useSearchAnime, useFetchTVDetails } from "@/hooks/useTMDB";
 import { AnimeCard } from "@/components/anime/anime-card";
 import { AnimeModal } from "@/components/anime/anime-modal";
@@ -16,18 +16,14 @@ export default function AnimePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAnimeId, setSelectedAnimeId] = useState<number | null>(null);
   
-  // Three sections: Trending, Top Rated, Action
   const { data: trendingData, loading: trendingLoading } = useFetchAnime(1, 'popularity.desc');
-  const { data: topRatedData, loading: topRatedLoading } = useFetchAnime(1, 'vote_average.desc', '16');
-  const { data: actionData, loading: actionLoading } = useFetchAnime(1, 'popularity.desc', '16,10759'); // 10759 is Action & Adventure for TV
-
+  
   const { data: searchData, loading: searchLoading } = useSearchAnime(searchQuery, 1);
+  
   const { data: animeDetails } = useFetchTVDetails(selectedAnimeId);
 
-  // If searching, show search results. Otherwise show sections.
-  const isSearching = searchQuery.trim().length > 0;
-  const displaySearch = searchData?.results;
-  const isLoading = isSearching ? searchLoading : (trendingLoading || topRatedLoading || actionLoading);
+  const displayAnime = searchQuery.trim() ? searchData?.results : trendingData?.results;
+  const isLoading = searchQuery.trim() ? searchLoading : trendingLoading;
 
   const handleWatchAnime = (animeId: number, title?: string) => {
     const params = new URLSearchParams({
@@ -39,38 +35,6 @@ export default function AnimePage() {
     });
     router.push(`/player?${params.toString()}`);
   };
-
-  const Section = ({ title, icon: Icon, data, loading }: any) => {
-    if (loading || !data?.results?.length) return null;
-    return (
-        <div className="mb-12">
-            <div className="flex items-center gap-3 mb-6 px-8 max-w-7xl mx-auto">
-                 <h3 className="text-2xl font-bold font-raleway flex items-center gap-2">
-                    {title} <Icon className="w-5 h-5 text-purple-500" />
-                </h3>
-            </div>
-            <DraggableScroll className="gap-4 py-4 px-8">
-            {data.results.slice(0, 15).map((anime: any) => (
-              <div key={anime.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
-                <AnimeCard
-                  anime={anime}
-                  onClick={() => setSelectedAnimeId(anime.id)}
-                />
-              </div>
-            ))}
-             <div className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
-                <div className="flex flex-col items-center justify-center">
-                    <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center leading-none">SEE <br />MORE</span>
-                </div>
-                <button className="w-20 h-20 rounded-full bg-neutral-900 dark:bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110">
-                    <ArrowUpRight className="w-8 h-8 text-white dark:text-black" />
-                </button>
-            </div>
-          </DraggableScroll>
-        </div>
-    );
-  };
-
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#000000] text-black dark:text-white">
@@ -102,52 +66,68 @@ export default function AnimePage() {
         </div>
       </section>
 
-      <section className="py-8 overflow-hidden">
-         {isSearching ? (
-             <div className="max-w-7xl mx-auto px-8">
-                <div className="flex items-center gap-3 mb-8">
-                    <Search className="w-6 h-6 text-purple-500" />
-                    <h3 className="text-2xl font-bold font-raleway">
-                    Search Results for "{searchQuery}"
-                    </h3>
-                </div>
-                {isLoading ? (
-                    <div className="flex items-center justify-center py-20">
-                        <Loader2 className="w-12 h-12 text-purple-500 animate-spin" />
-                    </div>
-                ): (
-                    displaySearch && displaySearch.length > 0 ? (
-                        <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
-                            {displaySearch.slice(0, 10).map((anime: any) => (
-                            <div key={anime.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
-                                <AnimeCard
-                                anime={anime}
-                                onClick={() => setSelectedAnimeId(anime.id)}
-                                />
-                            </div>
-                            ))}
-                        </DraggableScroll>
-                    ) : (
-                         <div className="text-center py-20">
-                            <Sparkles className="w-16 h-16 text-black/20 dark:text-white/20 mx-auto mb-4" />
-                            <p className="text-xl text-black/60 dark:text-white/60 font-raleway">
-                                No anime found
-                            </p>
-                        </div>
-                    )
-                )}
-             </div>
-         ) : (
-             <>
-                <Section title="Trending This Season" icon={Sparkles} data={trendingData} loading={trendingLoading} />
-                <Section title="Top Rated Classics" icon={Trophy} data={topRatedData} loading={topRatedLoading} />
-                <Section title="Action & Adventure" icon={Flame} data={actionData} loading={actionLoading} />
-             </>
-         )}
+      <section className="py-12 px-8 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            {searchQuery.trim() ? (
+              <>
+                <Search className="w-6 h-6 text-purple-500" />
+                <h3 className="text-2xl font-bold font-raleway">
+                  Search Results for "{searchQuery}"
+                </h3>
+              </>
+            ) : (
+              <>
+                <h3 className="text-2xl font-bold font-raleway flex items-center gap-2">
+                    Trending This Season <Sparkles className="w-5 h-5 text-purple-500" />
+                </h3>
+              </>
+            )}
+          </div>
+
+          {isLoading && (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-12 h-12 text-purple-500 animate-spin" />
+            </div>
+          )}
+        </div>
+
+        {!isLoading && displayAnime && displayAnime.length > 0 && (
+          <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
+            {displayAnime.slice(0, 10).map((anime: any) => (
+              <div key={anime.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
+                <AnimeCard
+                  anime={anime}
+                  onClick={() => setSelectedAnimeId(anime.id)}
+                />
+              </div>
+            ))}
+            
+            <div className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
+              <div className="flex flex-col items-center justify-center">
+                <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center leading-none">SEE <br />MORE</span>
+              </div>
+                <button className="w-20 h-20 rounded-full bg-neutral-900 dark:bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110">
+                  <ArrowUpRight className="w-8 h-8 text-white dark:text-black" />
+                </button>
+            </div>
+          </DraggableScroll>
+        )}
+
+        <div className="max-w-7xl mx-auto">
+          {!isLoading && displayAnime && displayAnime.length === 0 && (
+            <div className="text-center py-20">
+              <Sparkles className="w-16 h-16 text-black/20 dark:text-white/20 mx-auto mb-4" />
+              <p className="text-xl text-black/60 dark:text-white/60 font-raleway">
+                No anime found
+              </p>
+            </div>
+          )}
+        </div>
       </section>
 
       <AnimeModal
-        anime={animeDetails || (displaySearch?.find((a:any) => a.id === selectedAnimeId) || trendingData?.results?.find((a:any) => a.id === selectedAnimeId) || topRatedData?.results?.find((a:any) => a.id === selectedAnimeId) || actionData?.results?.find((a:any) => a.id === selectedAnimeId) || null)}
+        anime={animeDetails || (displayAnime?.find((a:any) => a.id === selectedAnimeId) || null)}
         isOpen={selectedAnimeId !== null}
         onClose={() => setSelectedAnimeId(null)}
         onWatch={handleWatchAnime}

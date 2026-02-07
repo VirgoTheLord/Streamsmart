@@ -145,7 +145,7 @@ export function AnimeHeroSlider() {
                 zIndex,
               }}
             >
-              <div className="relative w-64 h-96 sm:w-80 sm:h-[480px] rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-neutral-900">
+              <div className="relative w-64 h-96 sm:w-80 sm:h-[480px] rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-neutral-900 border border-purple-500/20">
                 <Image
                   src={getPosterSrc(show)}
                   alt={show.name}
