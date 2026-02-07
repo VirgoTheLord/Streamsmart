@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { MoviesNavbar } from "@/components/movies-navbar";
 import { DraggableScroll } from "@/components/ui/draggable-scroll";
 import { MoviesHeroSlider } from "@/components/movies/movies-hero-slider";
+import { FloatingFooter } from "@/components/floating-footer";
 
 export default function MoviesPage() {
   const router = useRouter();
@@ -186,7 +187,7 @@ export default function MoviesPage() {
             </div>
 
             {/* Anime Section */}
-            <div className="mb-16">
+            <div className="mb-0">
               <div className="max-w-7xl mx-auto px-4 sm:px-0">
                 <div className="flex items-center gap-3 mb-8">
                   <h3 className="text-2xl font-bold font-raleway">What's New This Week In Anime.</h3>
@@ -239,6 +240,8 @@ export default function MoviesPage() {
         onClose={() => setSelectedAnimeId(null)}
         onWatch={handleWatchSeries} 
       />
+
+      <FloatingFooter />
     </div>
   );
 }

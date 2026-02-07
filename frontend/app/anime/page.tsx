@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { MoviesNavbar } from "@/components/movies-navbar";
 import { DraggableScroll } from "@/components/ui/draggable-scroll";
 import { AnimeHeroSlider } from "@/components/anime/anime-hero-slider";
+import { FloatingFooter } from "@/components/floating-footer";
 
 export default function AnimePage() {
   const router = useRouter();

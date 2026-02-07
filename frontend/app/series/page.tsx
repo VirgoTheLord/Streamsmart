@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { MoviesNavbar } from "@/components/movies-navbar"; // Reuse for now, maybe rename later
 import { DraggableScroll } from "@/components/ui/draggable-scroll";
 import { SeriesHeroSlider } from "@/components/series/series-hero-slider";
+import { FloatingFooter } from "@/components/floating-footer";
 
 export default function SeriesPage() {
   const router = useRouter();

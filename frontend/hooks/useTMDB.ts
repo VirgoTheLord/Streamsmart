@@ -230,7 +230,7 @@ export const useFetchTV = (endpoint: string, page: number = 1) => {
 
 // --- ANIME HOOKS ---
 
-export const useFetchAnime = (page: number = 1) => {
+export const useFetchAnime = (page: number = 1, sortBy: string = 'popularity.desc') => {
     const [data, setData] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -241,7 +241,7 @@ export const useFetchAnime = (page: number = 1) => {
           setLoading(true);
           setError(null);
           
-          const url = `${TMDB_BASE_URL}/discover/tv?api_key=${TMDB_API_KEY}&page=${page}&with_genres=16&with_original_language=ja&sort_by=popularity.desc`;
+          const url = `${TMDB_BASE_URL}/discover/tv?api_key=${TMDB_API_KEY}&page=${page}&with_genres=16&with_original_language=ja&sort_by=${sortBy}`;
           
           const response = await fetch(url);
           
@@ -260,7 +260,7 @@ export const useFetchAnime = (page: number = 1) => {
       };
   
       fetchAnime();
-    }, [page]);
+    }, [page, sortBy]);
   
     return { data, loading, error };
 };
