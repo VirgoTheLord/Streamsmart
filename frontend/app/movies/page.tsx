@@ -148,11 +148,9 @@ export default function MoviesPage() {
             </div>
 
             {/* Series Section */}
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto mb-16">
               <div className="flex items-center gap-3 mb-8">
-                <h3 className="text-2xl font-bold font-raleway flex items-center gap-2">
-                    What's New in Series <Tv className="w-5 h-5 text-serenya-accent" />
-                </h3>
+                <h3 className="text-2xl font-bold font-raleway">What's New This Week In Series.</h3>
               </div>
 
               {!isLoading && trendingSeries?.results?.length > 0 && (
