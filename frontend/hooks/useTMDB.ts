@@ -227,3 +227,85 @@ export const useFetchTV = (endpoint: string, page: number = 1) => {
   
     return { data, loading, error };
   };
+
+// --- ANIME HOOKS ---
+
+export const useFetchAnime = (page: number = 1) => {
+    const [data, setData] = useState<any | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const fetchAnime = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const url = `${TMDB_BASE_URL}/discover/tv?api_key=${TMDB_API_KEY}&page=${page}&with_genres=16&with_original_language=ja&sort_by=popularity.desc`;
+          
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const result = await response.json();
+          setData(result);
+        } catch (err) {
+          console.error('API Error:', err);
+          setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchAnime();
+    }, [page]);
+  
+    return { data, loading, error };
+};
+
+export const useSearchAnime = (query: string, page: number = 1) => {
+    const [data, setData] = useState<any | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const searchAnime = async () => {
+        if (!query.trim()) {
+          setData(null);
+          return;
+        }
+  
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const url = `${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${page}`;
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const result = await response.json();
+          
+          // Client-side filter for Anime (Genre 16 + Language JA)
+          const filteredResults = result.results?.filter((show: any) => 
+             show.genre_ids?.includes(16) && show.original_language === 'ja'
+          ) || [];
+          
+          setData({ ...result, results: filteredResults });
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      const timeoutId = setTimeout(searchAnime, 500);
+      return () => clearTimeout(timeoutId);
+    }, [query, page]);
+  
+    return { data, loading, error };
+};
