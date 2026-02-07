@@ -40,12 +40,12 @@ export default function AnimePage() {
     <div className="min-h-screen bg-white dark:bg-[#000000] text-black dark:text-white">
       <MoviesNavbar /> 
 
-      <section className="relative min-h-[75vh] flex flex-col justify-center px-4 sm:px-8 overflow-hidden pt-32 pb-10">
+      <section className="relative min-h-[75vh] flex flex-col justify-center px-8 overflow-hidden pt-32 pb-20">
         <AnimeHeroSlider />
 
         <div className="absolute inset-0 z-[1] bg-white/70 dark:bg-black/50" />
 
-        <div className="max-w-7xl mx-auto relative z-10 w-full -mt-20 sm:-mt-40">
+        <div className="max-w-7xl mx-auto relative z-10 w-full -mt-40">
           <h2 className="text-5xl sm:text-7xl font-light font-star mb-4 tracking-wider text-center drop-shadow-2xl lowercase">
             worlds beyond<br /> imagination.
           </h2>
