@@ -115,3 +115,115 @@ export const useSearchMovies = (query: string, page: number = 1) => {
 
   return { data, loading, error };
 };
+
+// --- TV SERIES HOOKS ---
+
+export const useFetchTV = (endpoint: string, page: number = 1) => {
+    const [data, setData] = useState<any | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const fetchTV = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const url = `${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}&page=${page}`;
+          
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const result = await response.json();
+          setData(result);
+        } catch (err) {
+          console.error('API Error:', err);
+          setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchTV();
+    }, [endpoint, page]);
+  
+    return { data, loading, error };
+  };
+  
+  export const useFetchTVDetails = (tvId: number | null) => {
+    const [data, setData] = useState<any | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const fetchTVDetails = async () => {
+        try {
+          setLoading(true);
+          setData(null); 
+          setError(null);
+          
+          const url = `${TMDB_BASE_URL}/tv/${tvId}?api_key=${TMDB_API_KEY}&append_to_response=videos,credits,similar,recommendations,season/1`;
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const result = await response.json();
+          setData(result);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      if (tvId) {
+        fetchTVDetails();
+      }
+    }, [tvId]);
+  
+    return { data, loading, error };
+  };
+
+  export const useSearchTV = (query: string, page: number = 1) => {
+    const [data, setData] = useState<any | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const searchTV = async () => {
+        if (!query.trim()) {
+          setData(null);
+          return;
+        }
+  
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const url = `${TMDB_BASE_URL}/search/tv?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&page=${page}`;
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const result = await response.json();
+          setData(result);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      const timeoutId = setTimeout(searchTV, 500);
+      return () => clearTimeout(timeoutId);
+    }, [query, page]);
+  
+    return { data, loading, error };
+  };
