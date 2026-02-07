@@ -130,6 +130,8 @@ export default function SeriesPage() {
         onClose={() => setSelectedSeriesId(null)}
         onWatchSeries={handleWatchSeries}
       />
+      
+      <FloatingFooter />
     </div>
   );
 }

@@ -132,6 +132,8 @@ export default function AnimePage() {
         onClose={() => setSelectedAnimeId(null)}
         onWatch={handleWatchAnime}
       />
+      
+      <FloatingFooter />
     </div>
   );
 }
