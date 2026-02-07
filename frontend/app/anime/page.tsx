@@ -92,9 +92,9 @@ export default function AnimePage() {
           )}
         </div>
 
-        {!isLoading && displayAnime && displayAnime.length > 0 && (
+        {!isLoading && (displayAnime || []).length > 0 && (
           <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
-            {displayAnime.slice(0, 10).map((anime: any) => (
+            {(displayAnime || []).slice(0, 10).map((anime: any) => (
               <div key={anime.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
                 <AnimeCard
                   anime={anime}
@@ -115,7 +115,7 @@ export default function AnimePage() {
         )}
 
         <div className="max-w-7xl mx-auto">
-          {!isLoading && displayAnime && displayAnime.length === 0 && (
+          {!isLoading && (displayAnime || []).length === 0 && (
             <div className="text-center py-20">
               <Sparkles className="w-16 h-16 text-black/20 dark:text-white/20 mx-auto mb-4" />
               <p className="text-xl text-black/60 dark:text-white/60 font-raleway">

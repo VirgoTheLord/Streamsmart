@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Film, Search, TrendingUp, Home, Loader2, ArrowUpRight, Tv } from "lucide-react";
-import { useFetchMovies, useSearchMovies, useFetchMovieDetails, useFetchTV, useFetchTVDetails } from "@/hooks/useTMDB";
+import { useFetchMovies, useSearchMovies, useFetchMovieDetails, useFetchTV, useFetchTVDetails, useFetchAnime } from "@/hooks/useTMDB";
 import { MovieCard } from "@/components/movies/movie-card";
 import { MovieModal } from "@/components/movies/movie-modal";
 import { SeriesCard } from "@/components/series/series-card";
 import { SeriesModal } from "@/components/series/series-modal";
+import { AnimeCard } from "@/components/anime/anime-card";
+import { AnimeModal } from "@/components/anime/anime-modal";
 import { Input } from "@/components/ui/input";
 import { MoviesNavbar } from "@/components/movies-navbar";
 import { DraggableScroll } from "@/components/ui/draggable-scroll";
@@ -18,17 +20,20 @@ export default function MoviesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMovieId, setSelectedMovieId] = useState<number | null>(null);
   const [selectedSeriesId, setSelectedSeriesId] = useState<number | null>(null);
+  const [selectedAnimeId, setSelectedAnimeId] = useState<number | null>(null);
   
   const { data: trendingData, loading: trendingLoading } = useFetchMovies("/trending/movie/week", 1);
   const { data: trendingSeries, loading: seriesLoading } = useFetchTV("/trending/tv/week", 1);
+  const { data: trendingAnime, loading: animeLoading } = useFetchAnime(1);
   
   const { data: searchData, loading: searchLoading } = useSearchMovies(searchQuery, 1);
   
   const { data: movieDetails } = useFetchMovieDetails(selectedMovieId);
   const { data: seriesDetails } = useFetchTVDetails(selectedSeriesId);
+  const { data: animeDetails } = useFetchTVDetails(selectedAnimeId);
 
   const displayMovies = searchQuery.trim() ? searchData?.results : trendingData?.results;
-  const isLoading = searchQuery.trim() ? searchLoading : (trendingLoading || seriesLoading);
+  const isLoading = searchQuery.trim() ? searchLoading : (trendingLoading || seriesLoading || animeLoading);
 
   const handleWatchMovie = (movieId: number, imdbId?: string, title?: string) => {
     const params = new URLSearchParams({
@@ -126,9 +131,9 @@ export default function MoviesPage() {
                 </div>
               </div>
 
-              {!isLoading && trendingData?.results?.length > 0 && (
+              {!isLoading && (trendingData?.results || []).length > 0 && (
                 <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
-                  {trendingData.results.slice(0, 10).map((movie: any) => (
+                  {(trendingData?.results || []).slice(0, 10).map((movie: any) => (
                     <div key={movie.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
                       <MovieCard
                         movie={movie}
@@ -157,13 +162,44 @@ export default function MoviesPage() {
                 </div>
               </div>
 
-              {!isLoading && trendingSeries?.results?.length > 0 && (
+              {!isLoading && (trendingSeries?.results || []).length > 0 && (
                 <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
-                  {trendingSeries.results.slice(0, 10).map((series: any) => (
+                  {(trendingSeries?.results || []).slice(0, 10).map((series: any) => (
                     <div key={series.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
                       <SeriesCard
                         series={series}
                         onClick={() => setSelectedSeriesId(series.id)}
+                      />
+                    </div>
+                  ))}
+                  
+                  <div className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
+                    <div className="flex flex-col items-center justify-center">
+                      <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center leading-none">SEE <br />MORE</span>
+                    </div>
+                      <button className="w-20 h-20 rounded-full bg-neutral-900 dark:bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110">
+                        <ArrowUpRight className="w-8 h-8 text-white dark:text-black" />
+                      </button>
+                  </div>
+                </DraggableScroll>
+              )}
+            </div>
+
+            {/* Anime Section */}
+            <div className="mb-16">
+              <div className="max-w-7xl mx-auto px-4 sm:px-0">
+                <div className="flex items-center gap-3 mb-8">
+                  <h3 className="text-2xl font-bold font-raleway">What's New This Week In Anime.</h3>
+                </div>
+              </div>
+
+              {!isLoading && (trendingAnime?.results || []).length > 0 && (
+                <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
+                  {(trendingAnime?.results || []).slice(0, 10).map((anime: any) => (
+                    <div key={anime.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
+                      <AnimeCard
+                        anime={anime}
+                        onClick={() => setSelectedAnimeId(anime.id)}
                       />
                     </div>
                   ))}
@@ -195,6 +231,13 @@ export default function MoviesPage() {
         isOpen={selectedSeriesId !== null}
         onClose={() => setSelectedSeriesId(null)}
         onWatchSeries={handleWatchSeries}
+      />
+
+      <AnimeModal
+        anime={animeDetails || (trendingAnime?.results?.find((a:any) => a.id === selectedAnimeId) || null)}
+        isOpen={selectedAnimeId !== null}
+        onClose={() => setSelectedAnimeId(null)}
+        onWatch={handleWatchSeries} 
       />
     </div>
   );
