@@ -119,9 +119,11 @@ export default function MoviesPage() {
         ) : (
           <>
             {/* Movies Section */}
-            <div className="max-w-7xl mx-auto mb-16">
-              <div className="flex items-center gap-3 mb-8">
-                <h3 className="text-2xl font-bold font-raleway">What's New This Week In Cinema.</h3>
+            <div className="mb-16">
+              <div className="max-w-7xl mx-auto px-4 sm:px-0">
+                <div className="flex items-center gap-3 mb-8">
+                  <h3 className="text-2xl font-bold font-raleway">What's New This Week In Cinema.</h3>
+                </div>
               </div>
 
               {!isLoading && trendingData?.results?.length > 0 && (
@@ -148,9 +150,11 @@ export default function MoviesPage() {
             </div>
 
             {/* Series Section */}
-            <div className="max-w-7xl mx-auto mb-16">
-              <div className="flex items-center gap-3 mb-8">
-                <h3 className="text-2xl font-bold font-raleway">What's New This Week In Series.</h3>
+            <div className="mb-16">
+              <div className="max-w-7xl mx-auto px-4 sm:px-0">
+                <div className="flex items-center gap-3 mb-8">
+                  <h3 className="text-2xl font-bold font-raleway">What's New This Week In Series.</h3>
+                </div>
               </div>
 
               {!isLoading && trendingSeries?.results?.length > 0 && (
