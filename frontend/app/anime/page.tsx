@@ -79,7 +79,7 @@ export default function AnimePage() {
             ) : (
               <>
                 <h3 className="text-2xl font-bold font-raleway flex items-center gap-2">
-                    Trending This Season <Sparkles className="w-5 h-5 text-purple-500" />
+                    What's New this Week in Anime
                 </h3>
               </>
             )}
