@@ -36,47 +36,40 @@ export function HeroLeftSection() {
       </div>
 
       {/* Search Input Section */}
-      <div className="relative flex-1 px-4 sm:px-6 pb-3 sm:pb-4 pt-2">
-        <div className="relative w-full h-full bg-serenya-accent dark:bg-serenya-primary overflow-hidden rounded-lg">
+      <div className="relative flex-1 px-4 sm:px-6 pb-3 sm:pb-4 pt-2 z-50">
+        <div className="relative w-full h-full bg-serenya-accent dark:bg-serenya-primary rounded-lg xl:overflow-hidden">
           
           {/* Input Container */}
-          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 md:p-8">
+          <div className="absolute inset-0 flex items-center justify-center p-4 sm:p-6 md:p-8 overflow-visible">
             <div className="w-full max-w-2xl font-raleway">
-              <div className="relative bg-white dark:bg-serenya-bg/10 border border-white/30 dark:border-serenya-accent/20 rounded-2xl sm:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.18)] transition-all duration-300 p-3 sm:p-4 backdrop-blur-sm">
+              <div className="relative bg-white dark:bg-serenya-bg/10 border border-white/30 dark:border-serenya-accent/20 rounded-2xl sm:rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.18)] transition-all duration-300 p-3 sm:p-4 backdrop-blur-sm z-50">
                 
                 <Textarea 
                   placeholder="Ask anything..." 
-                  className="w-full bg-transparent border-none outline-none text-sm sm:text-md text-serenya-dark dark:text-white placeholder:text-serenya-dark/50 dark:placeholder:text-white/50 resize-none h-[50px] sm:h-[60px] p-2 font-medium shadow-none min-h-[50px] sm:min-h-[60px] focus-visible:ring-0 focus-visible:ring-offset-0"
+                  className="w-full bg-transparent border-none outline-none text-[15px] sm:text-md text-serenya-dark dark:text-white placeholder:text-serenya-dark/50 dark:placeholder:text-white/50 resize-none h-[50px] sm:h-[60px] p-2 font-medium shadow-none min-h-[50px] sm:min-h-[60px] focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
 
                 <div className="flex items-center justify-between mt-1 sm:mt-2 pt-1 sm:pt-2">
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <Button variant="outline" size="sm" className="rounded-full text-serenya-dark/80 hover:text-serenya-dark border-serenya-dark/20 bg-white/50 h-7 sm:h-8 gap-1 sm:gap-2 px-2 sm:px-3 text-xs sm:text-sm dark:text-white/80 dark:hover:text-white dark:border-white/20 dark:bg-white/10">
-                      <Search className="w-3 sm:w-4 h-3 sm:h-4" />
-                      <span>Focus</span>
-                    </Button>
-                    <Button variant="ghost" size="icon" className="rounded-full text-serenya-dark/60 hover:text-serenya-dark hover:bg-black/5 h-7 w-7 sm:h-8 sm:w-8 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
-                      <Globe className="w-4 sm:w-5 h-4 sm:h-5" />
-                    </Button>
-                    
-                    {/* Watch Direct Link with Tooltip */}
+                    {/* Watch Direct Pill with Tooltip */}
                     <div 
-                      className="relative"
+                      className="relative z-[100] flex items-center gap-1.5 sm:gap-2 rounded-full border border-serenya-dark/20 bg-white/50 h-8 sm:h-9 px-3 sm:px-4 dark:border-white/20 dark:bg-white/10 hover:bg-white/80 dark:hover:bg-white/20 transition-all cursor-pointer text-serenya-dark/80 hover:text-serenya-dark dark:text-white/80 dark:hover:text-white"
                       onMouseEnter={() => setShowTooltip(true)}
                       onMouseLeave={() => setShowTooltip(false)}
                     >
+                      <Search className="w-3.5 sm:w-4 h-3.5 sm:h-4 opacity-80" />
                       <DiagonalLink 
                         href="/movies" 
-                        className="text-serenya-dark dark:text-white font-raleway text-xs sm:text-sm [&_.char-replacement]:text-serenya-primary [&_.char-replacement]:dark:text-white"
+                        className="font-raleway text-xs sm:text-sm font-medium [&_.char-replacement]:text-serenya-primary [&_.char-replacement]:dark:text-white"
                       >
                         Watch Direct
                       </DiagonalLink>
                       
                       {/* Smooth Tooltip */}
-                      <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-serenya-dark dark:bg-white text-white dark:text-serenya-dark text-xs font-raleway rounded-lg whitespace-nowrap pointer-events-none transition-all duration-300 ${showTooltip ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}>
+                      <div className={`absolute bottom-full left-0 mb-2 px-3 py-1.5 bg-serenya-dark dark:bg-white text-white dark:text-serenya-dark text-xs font-raleway rounded-lg whitespace-nowrap pointer-events-none transition-all duration-300 z-[9999] shadow-2xl ${showTooltip ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-1'}`}>
                         Watch movies normally without using this feature
                         {/* Tooltip Arrow */}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px">
+                        <div className="absolute top-full left-8 -mt-px">
                           <div className="border-4 border-transparent border-t-serenya-dark dark:border-t-white" />
                         </div>
                       </div>

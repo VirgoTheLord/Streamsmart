@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag, User, LogOut, ChevronDown } from "lucide-react";
+import { User, LogOut, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -83,9 +83,6 @@ export function MoviesNavbar() {
         <div className="h-6 w-px bg-black/10 dark:bg-white/10 hidden sm:block" />
 
         <ModeToggle />
-        <Button size="icon" variant="ghost" className="rounded-full hover:bg-black/5 dark:text-white dark:hover:bg-white/10">
-          <ShoppingBag className="w-4 h-4" />
-        </Button>
 
         {/* Auth Button */}
         {isLoggedIn && user ? (

@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag, User, LogOut, ChevronDown } from "lucide-react";
+import { User, LogOut, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -61,9 +61,6 @@ export function Navbar() {
       {/* Right Icons */}
       <div className="flex gap-4 items-center">
         <ModeToggle />
-        <Button size="icon" variant="serenya" className="rounded-full shadow-lg hover:shadow-xl transition-all dark:bg-serenya-dark/20 dark:text-white dark:hover:bg-serenya-dark/40">
-          <ShoppingBag className="w-4 h-4" />
-        </Button>
 
         {/* Auth Button */}
         {isLoggedIn && user ? (

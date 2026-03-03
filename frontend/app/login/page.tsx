@@ -37,17 +37,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center overflow-hidden bg-[#020817]">
-      {/* Animated background blobs */}
+    <div className="min-h-screen relative flex items-center justify-center overflow-hidden bg-white dark:bg-[#020817] transition-colors duration-300">
+      {/* Animated background blobs - Unique Light Mode Colors */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-serenya-primary/20 blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-serenya-accent/15 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-serenya-dark/30 blur-[80px]" />
+        <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-blue-400/50 dark:bg-serenya-primary/15 blur-[120px] animate-pulse" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-blue-400/30 dark:bg-serenya-accent/10 blur-[100px] animate-pulse delay-1000" />
+        
+      </div>
+
+      {/* Large STREAMSMART Watermark - Bottom Left */}
+      <div className="absolute bottom-[10px] left-[15px] opacity-10 pointer-events-none select-none z-0 overflow-hidden">
+        <h1 className="text-[clamp(60px,15vw,170px)] font-bold leading-none tracking-widest font-star uppercase">
+          STREAMSMART
+        </h1>
       </div>
 
       {/* Subtle grid overlay */}
       <div
-        className="absolute inset-0 z-0 opacity-[0.03]"
+        className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.04] invert dark:invert-0"
         style={{
           backgroundImage:
             "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
@@ -55,26 +62,21 @@ export default function LoginPage() {
         }}
       />
 
-      {/* Logo — top left */}
-      <div className="absolute top-6 left-8 z-20">
-        <Link href="/" className="text-2xl font-medium tracking-widest text-white font-star hover:text-serenya-accent transition-colors">
-          StreamSmart
-        </Link>
-      </div>
+
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-md mx-4">
-        <div className="backdrop-blur-2xl bg-white/5 border border-white/10 rounded-2xl shadow-[0_0_60px_rgba(73,136,196,0.15)] p-8 sm:p-10">
+        <div className="backdrop-blur-xl bg-white/40 dark:bg-white/5 border border-serenya-dark/10 dark:border-white/10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgba(73,136,196,0.05)] p-8 sm:p-10 transition-colors duration-300">
           {/* Header */}
           <div className="mb-8 text-center">
-            <div className="inline-flex items-center gap-2 bg-serenya-primary/20 border border-serenya-accent/30 text-serenya-accent text-xs font-raleway font-semibold px-3 py-1.5 rounded-full mb-5 tracking-wider uppercase">
+            <div className="inline-flex items-center gap-2 bg-serenya-primary/10 dark:bg-serenya-primary/20 border border-serenya-accent/20 dark:border-serenya-accent/30 text-serenya-accent dark:text-serenya-accent text-xs font-raleway font-semibold px-3 py-1.5 rounded-full mb-5 tracking-wider uppercase">
               <Sparkles className="w-3 h-3" />
               Welcome Back
             </div>
-            <h1 className="text-3xl lowercase sm:text-4xl font-star text-white tracking-wider mb-2">
+            <h1 className="text-3xl lowercase sm:text-4xl font-star text-serenya-dark dark:text-white tracking-wider mb-2 transition-colors">
               Sign In
             </h1>
-            <p className="text-white/50 text-sm font-raleway">
+            <p className="text-serenya-dark/60 dark:text-white/50 text-sm font-raleway transition-colors">
               Enter your credentials to continue streaming
             </p>
           </div>
@@ -83,7 +85,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <div className="relative group">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-serenya-accent transition-colors" />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-serenya-dark/40 dark:text-white/30 group-focus-within:text-serenya-accent transition-colors" />
               <input
                 id="email"
                 type="email"
@@ -91,13 +93,13 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email address"
                 autoComplete="email"
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-white text-sm font-raleway placeholder:text-white/30 focus:outline-none focus:border-serenya-accent/60 focus:bg-white/8 transition-all"
+                className="w-full bg-white/50 dark:bg-white/5 border border-serenya-dark/10 dark:border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-serenya-dark dark:text-white text-sm font-raleway placeholder:text-serenya-dark/40 dark:placeholder:text-white/30 focus:outline-none focus:border-serenya-accent/60 focus:bg-white/80 dark:focus:bg-white/8 transition-all"
               />
             </div>
 
             {/* Password */}
             <div className="relative group">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-serenya-accent transition-colors" />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-serenya-dark/40 dark:text-white/30 group-focus-within:text-serenya-accent transition-colors" />
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -105,12 +107,12 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 autoComplete="current-password"
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-12 py-3.5 text-white text-sm font-raleway placeholder:text-white/30 focus:outline-none focus:border-serenya-accent/60 focus:bg-white/8 transition-all"
+                className="w-full bg-white/50 dark:bg-white/5 border border-serenya-dark/10 dark:border-white/10 rounded-xl pl-11 pr-12 py-3.5 text-serenya-dark dark:text-white text-sm font-raleway placeholder:text-serenya-dark/40 dark:placeholder:text-white/30 focus:outline-none focus:border-serenya-accent/60 focus:bg-white/80 dark:focus:bg-white/8 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/70 transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-serenya-dark/40 dark:text-white/30 hover:text-serenya-dark/70 dark:hover:text-white/70 transition-colors"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -135,7 +137,7 @@ export default function LoginPage() {
               id="sign-in-btn"
               type="submit"
               disabled={isLoading}
-              className="w-full relative bg-serenya-primary hover:bg-serenya-primary/90 text-white font-raleway font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-[0_4px_30px_rgba(28,77,141,0.5)] hover:shadow-[0_6px_40px_rgba(28,77,141,0.7)] disabled:opacity-60 disabled:cursor-not-allowed group mt-2"
+              className="w-full relative bg-serenya-primary hover:bg-serenya-primary/90 text-white font-raleway font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed group mt-2"
             >
               {isLoading ? (
                 <>
@@ -156,22 +158,22 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-4 my-6">
-            <div className="flex-1 h-px bg-white/10" />
-            <span className="text-white/30 text-xs font-raleway">or</span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-serenya-dark/10 dark:bg-white/10" />
+            <span className="text-serenya-dark/30 dark:text-white/30 text-xs font-raleway">or</span>
+            <div className="flex-1 h-px bg-serenya-dark/10 dark:bg-white/10" />
           </div>
 
           {/* Guest */}
           <button
             id="guest-btn"
             onClick={() => router.push("/movies")}
-            className="w-full border border-white/10 hover:border-white/20 text-white/60 hover:text-white/90 font-raleway text-sm py-3.5 rounded-xl transition-all duration-200 hover:bg-white/5"
+            className="w-full border border-serenya-dark/10 dark:border-white/10 hover:border-serenya-dark/20 dark:hover:border-white/20 text-serenya-dark/60 dark:text-white/60 hover:text-serenya-dark/90 dark:hover:text-white/90 font-raleway text-sm py-3.5 rounded-xl transition-all duration-200 hover:bg-serenya-dark/5 dark:hover:bg-white/5"
           >
             Continue as Guest
           </button>
 
           {/* Sign up link */}
-          <p className="text-center text-white/30 text-xs font-raleway mt-6">
+          <p className="text-center text-serenya-dark/40 dark:text-white/30 text-xs font-raleway mt-6 transition-colors">
             Don&apos;t have an account?{" "}
             <button className="text-serenya-accent hover:text-serenya-accent/80 transition-colors font-medium">
               Create one
