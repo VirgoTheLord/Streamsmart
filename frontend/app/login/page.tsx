@@ -71,7 +71,7 @@ export default function LoginPage() {
               <Sparkles className="w-3 h-3" />
               Welcome Back
             </div>
-            <h1 className="text-3xl sm:text-4xl font-star text-white tracking-wider mb-2">
+            <h1 className="text-3xl lowercase sm:text-4xl font-star text-white tracking-wider mb-2">
               Sign In
             </h1>
             <p className="text-white/50 text-sm font-raleway">
