@@ -45,9 +45,9 @@ export default function LoginPage() {
         
       </div>
 
-      {/* Large STREAMSMART Watermark - Bottom Left */}
-      <div className="absolute bottom-[10px] left-[15px] opacity-10 pointer-events-none select-none z-0 overflow-hidden">
-        <h1 className="text-[clamp(60px,15vw,170px)] font-bold leading-none tracking-widest font-star uppercase">
+      {/* Large STREAMSMART Watermark - Bottom Center */}
+      <div className="absolute bottom-[10px] left-0 right-0 flex justify-center opacity-10 pointer-events-none select-none z-0 overflow-hidden">
+        <h1 className="text-[clamp(40px,10vw,140px)] font-bold leading-none tracking-widest font-star uppercase text-center whitespace-nowrap">
           STREAMSMART
         </h1>
       </div>

@@ -104,7 +104,7 @@ export function HeroRightSection() {
 
         {/* Movie Poster Carousel */}
         <div 
-          className="relative w-full h-full flex items-center justify-center overflow-hidden -mt-6 sm:-mt-8 md:-mt-8"
+          className="relative w-full h-full flex items-center justify-center overflow-hidden"
         >
           {loading ? (
             // Loading skeleton
@@ -116,11 +116,14 @@ export function HeroRightSection() {
           ) : movies.length > 0 ? (
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Previous poster (left, faded) */}
-              <div className="absolute left-4 sm:left-8 z-10 opacity-35 scale-80 transition-all duration-600">
+              <div className="absolute left-4 sm:left-8 z-10 opacity-35 transition-all duration-600" style={{ transform: 'scale(0.8)' }}>
                 {(() => {
                    const prevMovie = movies[(currentIndex - 1 + movies.length) % movies.length];
                    return prevMovie && (
-                    <div className="relative w-28 sm:w-36 md:w-44 h-42 sm:h-54 md:h-66 rounded-lg overflow-hidden shadow-2xl">
+                    <div
+                      className="relative rounded-lg overflow-hidden shadow-2xl"
+                      style={{ width: 'clamp(100px, 13vw, 210px)', height: 'clamp(150px, 28vh, 315px)' }}
+                    >
                       <Image
                         src={getPosterSrc(prevMovie, "w500")}
                         alt={prevMovie.title}
@@ -138,13 +141,17 @@ export function HeroRightSection() {
               {/* Current poster (center, large) */}
               <div 
                 className={`relative z-20 transition-all duration-600 ${
-                  isTransitioning ? 'scale-80 opacity-90' : 'scale-90 opacity-100'
+                  isTransitioning ? 'opacity-90' : 'opacity-100'
                 }`}
+                style={{ transform: isTransitioning ? 'scale(0.85)' : 'scale(0.92)' }}
               >
                 {(() => {
                   const currentMovie = movies[currentIndex];
                   return currentMovie && (
-                    <div className="relative w-52 sm:w-64 md:w-80 h-78 sm:h-96 md:h-[480px] rounded-lg overflow-hidden shadow-2xl ring-2 ring-white/20">
+                    <div
+                      className="relative rounded-lg overflow-hidden shadow-2xl ring-2 ring-white/20"
+                      style={{ width: 'clamp(180px, 22vw, 380px)', height: 'clamp(260px, 55vh, 520px)' }}
+                    >
                       <Image
                         src={getPosterSrc(currentMovie, "w780")}
                         alt={currentMovie.title}
@@ -177,11 +184,14 @@ export function HeroRightSection() {
               </div>
 
               {/* Next poster (right, faded) */}
-              <div className="absolute right-4 sm:right-8 z-10 opacity-35 scale-80 transition-all duration-600">
+              <div className="absolute right-4 sm:right-8 z-10 opacity-35 transition-all duration-600" style={{ transform: 'scale(0.8)' }}>
                 {(() => {
                    const nextMovie = movies[(currentIndex + 1) % movies.length];
                    return nextMovie && (
-                    <div className="relative w-28 sm:w-36 md:w-44 h-42 sm:h-54 md:h-66 rounded-lg overflow-hidden shadow-2xl">
+                    <div
+                      className="relative rounded-lg overflow-hidden shadow-2xl"
+                      style={{ width: 'clamp(80px, 10vw, 168px)', height: 'clamp(120px, 22vh, 252px)' }}
+                    >
                       <Image
                         src={getPosterSrc(nextMovie, "w500")}
                         alt={nextMovie.title}
@@ -196,7 +206,7 @@ export function HeroRightSection() {
                 })()}
               </div>
 
-              <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">
+              <div className="absolute bottom-8 sm:bottom-10 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">
                 {movies.slice(0, 10).map((_, index) => (
                   <button
                     key={index}
