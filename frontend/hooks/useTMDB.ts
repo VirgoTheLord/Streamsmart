@@ -1,7 +1,12 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { MoviesResponse, MovieDetails } from '@/lib/types/movie';
+import { useEffect, useState, useCallback } from 'react';
+import { MoviesResponse, MovieDetails, Movie } from '@/lib/types/movie';
+import { ParsedIntent } from '@/lib/types/streamsmart';
+import { searchStreamsmart } from '@/lib/services/streamsmartApi';
+import { fetchMoviesByIds } from '@/lib/services/tmdbService';
+import { toast } from 'sonner';
+
 
 const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 const TMDB_BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
@@ -309,3 +314,78 @@ export const useSearchAnime = (query: string, page: number = 1) => {
   
     return { data, loading, error };
 };
+
+// --- AI SEARCH HOOK ---
+
+export interface AISearchState {
+  movies: Movie[];
+  loading: boolean;
+  error: string | null;
+  parsedIntent: ParsedIntent | null;
+  query: string;
+}
+
+/**
+ * Orchestrates the StreamSmart retrieval API + TMDB batch fetch.
+ * Returns `search(query)` as an imperative trigger.
+ * Does NOT auto-search on mount — only fires when the user submits.
+ */
+export function useAISearch() {
+  const [state, setState] = useState<AISearchState>({
+    movies: [],
+    loading: false,
+    error: null,
+    parsedIntent: null,
+    query: '',
+  });
+
+  const search = useCallback(async (query: string) => {
+    if (!query.trim()) return;
+
+    setState(prev => ({ ...prev, loading: true, error: null, query }));
+
+    try {
+      // 1. Call StreamSmart retrieval backend
+      const ssResponse = await searchStreamsmart(query);
+
+      // 2. If the query is not movie-related, notify and bail out
+      if (ssResponse.intent_passable === false) {
+        toast.warning('That doesn\'t look like a movie query', {
+          description: 'Try something like "thrilling Tom Cruise movies" or "romantic comedies from the 90s".',
+          duration: 5000,
+        });
+        setState(prev => ({ ...prev, loading: false, query }));
+        return;
+      }
+
+      // 2. Extract TMDB IDs in ranked order
+      const tmdbIds = (ssResponse.results ?? [])
+        .map(r => parseInt(r.tmdb_id, 10))
+        .filter(id => !isNaN(id));
+
+      // 3. Batch-fetch full TMDB movie details
+      const movies = await fetchMoviesByIds(tmdbIds);
+
+      setState({
+        movies,
+        loading: false,
+        error: null,
+        parsedIntent: ssResponse.parsed_intent ?? null,
+        query,
+      });
+    } catch (err) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: err instanceof Error ? err.message : 'AI search failed',
+      }));
+    }
+  }, []);
+
+  const reset = useCallback(() => {
+    setState({ movies: [], loading: false, error: null, parsedIntent: null, query: '' });
+  }, []);
+
+  return { ...state, search, reset };
+}
+

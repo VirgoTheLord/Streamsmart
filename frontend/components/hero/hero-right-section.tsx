@@ -206,7 +206,7 @@ export function HeroRightSection() {
                 })()}
               </div>
 
-              <div className="absolute bottom-8 sm:bottom-10 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">
+              <div className="absolute bottom-6 sm:bottom-7 left-1/2 transform -translate-x-1/2 flex gap-2 z-30">
                 {movies.slice(0, 10).map((_, index) => (
                   <button
                     key={index}

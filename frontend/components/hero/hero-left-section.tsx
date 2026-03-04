@@ -1,18 +1,39 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, KeyboardEvent } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DiagonalLink } from "@/components/ui/diagonal-link";
-import { Search, Globe, Paperclip, Mic, ArrowRight, ChevronRight } from "lucide-react";
+import { Search, Paperclip, Mic, ArrowRight, ChevronRight } from "lucide-react";
 
 export function HeroLeftSection() {
   const [showTooltip, setShowTooltip] = useState(false);
+  const [query, setQuery] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  const handleSubmit = () => {
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    router.push(`/movies?aiQuery=${encodeURIComponent(trimmed)}`);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Submit on Ctrl/Cmd + Enter
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  const handlePillClick = (pill: string) => {
+    router.push(`/movies?aiQuery=${encodeURIComponent(pill)}`);
+  };
 
   return (
     <div ref={containerRef} className="relative bg-white dark:bg-[#020817] h-full flex flex-col">
-      {/* StreamSmart Text - Removed Top Padding to fix position */}
+      {/* StreamSmart Text */}
       <div className="px-4 sm:px-6 pt-0 sm:pt-1 pb-0 flex-shrink-0">
         <h1 className="text-[clamp(24px,5vw,60px)] font-medium leading-[0.9] tracking-wider font-star overflow-hidden">
           STREAMSMART
@@ -46,6 +67,9 @@ export function HeroLeftSection() {
                 
                 <Textarea 
                   placeholder="Ask anything..." 
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   className="w-full bg-transparent border-none outline-none text-[15px] sm:text-md text-serenya-dark dark:text-white placeholder:text-serenya-dark/50 dark:placeholder:text-white/50 resize-none h-[50px] sm:h-[60px] p-2 font-medium shadow-none min-h-[50px] sm:min-h-[60px] focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
 
@@ -83,7 +107,13 @@ export function HeroLeftSection() {
                     <Button variant="ghost" size="icon" className="text-serenya-dark/60 hover:text-serenya-dark hover:bg-black/5 rounded-full h-8 w-8 sm:h-9 sm:w-9 dark:text-white/60 dark:hover:text-white dark:hover:bg-white/10">
                       <Mic className="w-4 sm:w-5 h-4 sm:h-5" />
                     </Button>
-                    <Button variant="default" size="icon" className="group rounded-full h-8 w-8 sm:h-9 sm:w-9 bg-serenya-primary hover:bg-serenya-dark dark:bg-serenya-dark dark:hover:bg-serenya-primary shadow-sm">
+                    <Button
+                      variant="default"
+                      size="icon"
+                      onClick={handleSubmit}
+                      disabled={!query.trim()}
+                      className="group rounded-full h-8 w-8 sm:h-9 sm:w-9 bg-serenya-primary hover:bg-serenya-dark dark:bg-serenya-dark dark:hover:bg-serenya-primary shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                    >
                       <ArrowRight className="w-3 sm:w-4 h-3 sm:h-4 text-white group-hover:scale-110 transition-transform" />
                     </Button>
                   </div>
@@ -91,11 +121,12 @@ export function HeroLeftSection() {
               </div>
 
               <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mt-3 sm:mt-4">
-                {["Action", "Comedy", "Drama", "Sci-Fi"].map((pill) => (
+                {["Action blockbusters", "Romantic comedies", "Sci-Fi classics", "Dark thrillers"].map((pill) => (
                   <Button 
                     key={pill} 
                     variant="secondary"
                     size="sm"
+                    onClick={() => handlePillClick(pill)}
                     className="rounded-lg bg-white/70 dark:bg-white/10 border border-white/40 text-serenya-dark/80 hover:text-serenya-dark hover:bg-white dark:hover:bg-white/20 hover:border-white/60 transition-all cursor-pointer h-6 sm:h-7 text-[10px] sm:text-xs font-medium px-2 sm:px-3 dark:text-white/80 dark:hover:text-white"
                   >
                     <span className="opacity-50 mr-1.5">❖</span>
