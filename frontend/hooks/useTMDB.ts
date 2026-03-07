@@ -194,6 +194,42 @@ export const useFetchTV = (endpoint: string, page: number = 1) => {
     return { data, loading, error };
   };
 
+  export const useFetchTVSeason = (tvId: number | null, seasonNumber: number) => {
+    const [data, setData] = useState<any | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const fetchTVSeason = async () => {
+        try {
+          setLoading(true);
+          setData(null);
+          setError(null);
+          
+          const url = `${TMDB_BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`;
+          const response = await fetch(url);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const result = await response.json();
+          setData(result);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'An error occurred');
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      if (tvId && seasonNumber !== undefined && seasonNumber !== null) {
+        fetchTVSeason();
+      }
+    }, [tvId, seasonNumber]);
+  
+    return { data, loading, error };
+  };
+
   export const useSearchTV = (query: string, page: number = 1) => {
     const [data, setData] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);

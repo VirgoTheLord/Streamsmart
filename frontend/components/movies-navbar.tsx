@@ -1,6 +1,6 @@
 "use client";
 
-import { User, LogOut, ChevronDown } from "lucide-react";
+import { User, LogOut, ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -33,15 +33,25 @@ export function MoviesNavbar() {
     router.push("/");
   };
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <nav className="flex justify-between items-center py-3 px-6 max-w-[1600px] mx-auto relative z-50">
+    <nav className="flex justify-between items-center py-3 px-4 md:px-6 max-w-[1600px] mx-auto relative z-50">
       <div className="flex items-center gap-2">
-        <Link href="/" className="text-2xl sm:text-3xl font-medium tracking-wider text-serenya-dark dark:text-white font-star">
+        {/* Logo - hidden on very small screens, shown otherwise */}
+        <Link href="/" className="hidden sm:block text-2xl sm:text-3xl font-medium tracking-wider text-serenya-dark dark:text-white font-star">
           StreamSmart
         </Link>
+        {/* Mobile/Tablet Hamburger Button */}
+        <button 
+          className="lg:hidden p-2 -ml-2 text-serenya-dark dark:text-white"
+          onClick={() => setIsMobileMenuOpen(true)}
+        >
+          <Menu className="w-6 h-6" />
+        </button>
       </div>
 
-      <div className="hidden md:flex gap-8 items-center font-raleway absolute left-1/2 -translate-x-1/2">
+      <div className="hidden lg:flex gap-8 items-center font-raleway absolute left-1/2 -translate-x-1/2">
         {[
           { name: "Movies", href: "/movies" },
           { name: "Series", href: "/series" },
@@ -123,12 +133,56 @@ export function MoviesNavbar() {
           <Link
             id="sign-in-link"
             href="/login"
-            className="flex items-center gap-1.5 text-sm font-raleway font-semibold text-white bg-serenya-primary hover:bg-serenya-primary/90 px-4 py-2 rounded-full transition-all shadow-md hover:shadow-lg"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-raleway font-semibold text-white bg-serenya-primary hover:bg-serenya-primary/90 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition-all shadow-md hover:shadow-lg"
           >
             <User className="w-3.5 h-3.5" />
-            Sign In
+            <span className="hidden sm:inline">Sign In</span>
           </Link>
         )}
+      </div>
+
+      {/* Mobile Slide-in Menu */}
+      <div 
+        className={`fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+      <div 
+        className={`fixed top-0 left-0 bottom-0 w-[280px] bg-white dark:bg-[#0a0a0a] z-[101] flex flex-col pt-20 px-6 transition-transform duration-300 ease-in-out lg:hidden ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
+         <button 
+          className="absolute top-4 right-4 p-2 text-serenya-dark dark:text-white"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+           <X className="w-6 h-6" />
+         </button>
+
+         <Link href="/" className="text-2xl font-medium tracking-wider text-serenya-dark dark:text-white font-star mb-10" onClick={() => setIsMobileMenuOpen(false)}>
+          StreamSmart
+        </Link>
+
+         <div className="flex flex-col gap-6 font-raleway">
+          {[
+            { name: "Movies", href: "/movies" },
+            { name: "Series", href: "/series" },
+            { name: "Anime", href: "/anime" }
+          ].map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              className="text-serenya-dark dark:text-white text-lg font-medium border-b border-black/5 dark:border-white/5 pb-4"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
+          <Link
+             href="/"
+             className="text-serenya-accent font-bold text-lg border-b border-black/5 dark:border-white/5 pb-4"
+             onClick={() => setIsMobileMenuOpen(false)}
+          >
+             Smart Mode
+          </Link>
+        </div>
       </div>
     </nav>
   );

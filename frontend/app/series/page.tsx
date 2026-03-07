@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Film, Search, Loader2, Tv, ArrowUpRight } from "lucide-react";
 import { useFetchTV, useSearchTV, useFetchTVDetails } from "@/hooks/useTMDB";
 import { SeriesCard } from "@/components/series/series-card";
-import { SeriesModal } from "@/components/series/series-modal";
+import { MediaModal } from "@/components/shared/media-modal";
 import { Input } from "@/components/ui/input";
 import { MoviesNavbar } from "@/components/movies-navbar"; // Reuse for now, maybe rename later
 import { DraggableScroll } from "@/components/ui/draggable-scroll";
@@ -41,45 +41,45 @@ export default function SeriesPage() {
     <div className="min-h-screen bg-white dark:bg-[#000000] text-black dark:text-white">
       <MoviesNavbar /> 
 
-      <section className="relative min-h-[75vh] flex flex-col justify-center px-8 overflow-hidden pt-32 pb-20">
+      <section className="relative min-h-[50vh] md:min-h-[75vh] flex flex-col justify-center px-4 md:px-8 overflow-hidden pt-16 md:pt-32 pb-8 md:pb-20">
         <SeriesHeroSlider />
 
         <div className="absolute inset-0 z-[1] bg-white/70 dark:bg-black/50" />
 
-        <div className="max-w-7xl mx-auto relative z-10 w-full -mt-40">
-          <h2 className="text-5xl sm:text-7xl font-light font-star mb-4 tracking-wider text-center drop-shadow-2xl">
+        <div className="max-w-7xl mx-auto relative z-10 w-full md:-mt-40">
+          <h2 className="text-4xl sm:text-5xl md:text-7xl font-light font-star mb-2 md:mb-4 tracking-wider text-center drop-shadow-2xl px-2">
             Television,<br /> Reimagined.
           </h2>
-          <p className="text-lg text-black/90 dark:text-white/90 font-raleway max-w-2xl mx-auto text-center mb-10 font-medium drop-shadow-lg">
+          <p className="text-base md:text-lg text-black/90 dark:text-white/90 font-raleway max-w-2xl mx-auto text-center mb-8 md:mb-10 font-medium drop-shadow-lg px-4">
             Dive into binge-worthy series, spanning every genre and era — curated for your ultimate viewing pleasure.
           </p>
 
-          <div className="max-w-xl mx-auto relative mb-8">
-            <Search className="absolute left-5 opacity-70 top-1/2 transform -translate-y-1/2 w-5 h-5 text-black/50 dark:text-white/50 z-10 pointer-events-none" />
+          <div className="max-w-xl mx-auto relative mb-8 px-0 sm:px-4">
+            <Search className="absolute left-4 sm:left-9 opacity-70 top-1/2 transform -translate-y-1/2 w-5 h-5 text-black/50 dark:text-white/50 z-10 pointer-events-none" />
             <Input
               type="text"
               placeholder="Search for series..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-13 py-6 text-lg font-raleway bg-white/80 dark:bg-black/60 border border-black/5 dark:border-white/10 rounded-xl backdrop-blur-md focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-black/20 dark:focus:border-white/20 transition-all placeholder:text-black/40 dark:placeholder:text-white/40"
+              className="pl-12 sm:pl-13 py-6 text-lg font-raleway bg-white/80 dark:bg-black/60 border border-black/5 dark:border-white/10 rounded-xl backdrop-blur-md focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-black/20 dark:focus:border-white/20 transition-all placeholder:text-black/40 dark:placeholder:text-white/40"
             />
           </div>
         </div>
       </section>
 
-      <section className="py-12 px-8 overflow-hidden">
+      <section className="py-8 md:py-12 px-4 md:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-4 md:mb-8">
             {searchQuery.trim() ? (
               <>
                 <Search className="w-6 h-6 text-serenya-accent" />
-                <h3 className="text-2xl font-bold font-raleway">
+                <h3 className="text-xl md:text-2xl font-bold font-raleway ml-[3px]">
                   Search Results for "{searchQuery}"
                 </h3>
               </>
             ) : (
               <>
-                <h3 className="text-2xl font-bold font-raleway">What's New This Week In TV.</h3>
+                <h3 className="text-xl md:text-2xl font-bold font-raleway ml-[7px] md:ml-0">What's New This Week In TV.</h3>
               </>
             )}
           </div>
@@ -92,9 +92,9 @@ export default function SeriesPage() {
         </div>
 
         {!isLoading && displaySeries && displaySeries.length > 0 && (
-          <DraggableScroll className="gap-4 py-4 -mx-8 pr-8 pl-[max(2rem,calc(50vw-40rem))]">
+          <DraggableScroll className="gap-2 md:gap-4 py-4 -mx-4 md:-mx-8 pr-4 md:pr-8 pl-[max(2rem,calc(50vw-40rem))] md:pl-[max(3rem,calc(50vw-40rem))]">
             {displaySeries.slice(0, 10).map((series: any) => (
-              <div key={series.id} className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 select-none text-left">
+              <div key={series.id} className="w-[140px] sm:w-[160px] md:w-[200px] lg:w-[240px] flex-shrink-0 select-none text-left">
                 <SeriesCard
                   series={series}
                   onClick={() => setSelectedSeriesId(series.id)}
@@ -102,12 +102,12 @@ export default function SeriesPage() {
               </div>
             ))}
             
-            <div className="w-[160px] sm:w-[200px] md:w-[240px] flex-shrink-0 flex items-center justify-center gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
+            <div className="w-[140px] sm:w-[160px] md:w-[200px] lg:w-[240px] flex-shrink-0 flex items-center justify-center gap-2 md:gap-4 group cursor-pointer hover:opacity-80 transition-opacity">
               <div className="flex flex-col items-center justify-center">
-                <span className="font-raleway font-bold text-xl text-neutral-900 dark:text-white tracking-widest text-center leading-none">SEE <br />MORE</span>
+                <span className="font-raleway font-bold text-lg md:text-xl text-neutral-900 dark:text-white tracking-widest text-center leading-none">SEE <br />MORE</span>
               </div>
-                <button className="w-20 h-20 rounded-full bg-neutral-900 dark:bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110">
-                  <ArrowUpRight className="w-8 h-8 text-white dark:text-black" />
+                <button className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-neutral-900 dark:bg-white border border-black/5 dark:border-white/10 flex items-center justify-center shadow-xl transition-transform duration-300 group-hover:scale-110">
+                  <ArrowUpRight className="w-6 h-6 md:w-8 md:h-8 text-white dark:text-black" />
                 </button>
             </div>
           </DraggableScroll>
@@ -125,11 +125,12 @@ export default function SeriesPage() {
         </div>
       </section>
 
-      <SeriesModal
-        series={seriesDetails || (displaySeries?.find((s:any) => s.id === selectedSeriesId) || null)}
+      <MediaModal
+        media={seriesDetails || (displaySeries?.find((s:any) => s.id === selectedSeriesId) || null)}
+        type="tv"
         isOpen={selectedSeriesId !== null}
         onClose={() => setSelectedSeriesId(null)}
-        onWatchSeries={handleWatchSeries}
+        onWatch={handleWatchSeries}
       />
       
       <FloatingFooter />

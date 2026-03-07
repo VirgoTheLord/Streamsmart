@@ -20,7 +20,7 @@ export function FloatingFooter() {
 
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-serenya-accent/5 dark:bg-serenya-dark/5 blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col md:flex-row items-stretch justify-between py-16 px-12 gap-10 md:gap-4 h-full min-h-[250px]">
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between py-12 px-6 md:py-16 md:px-12 gap-10 md:gap-4 h-full min-h-[250px]">
           
 
           <div className="flex flex-col items-center md:items-start justify-between gap-6 flex-1 order-2 md:order-1">
@@ -37,18 +37,18 @@ export function FloatingFooter() {
 
 
           <div className="flex flex-col items-center justify-center flex-[2] text-center order-1 md:order-2">
-             <div className="flex items-center justify-center gap-5 mb-4 group cursor-default">
+             <div className="flex items-center justify-center gap-3 md:gap-5 mb-2 md:mb-4 group cursor-default">
 
-                 <div className="relative w-14 h-14">
+                 <div className="relative w-10 h-10 md:w-14 md:h-14">
                     <div className="absolute inset-0 bg-serenya-accent blur-xl opacity-40 group-hover:opacity-60 transition-opacity duration-500" />
                     
                  </div>
                  
-                 <h2 className="text-6xl md:text-8xl text-transparent bg-clip-text mr-10 bg-gradient-to-b from-serenya-dark to-serenya-accent dark:from-white dark:to-neutral-400 font-star tracking-wider drop-shadow-sm dark:drop-shadow-none">
+                 <h2 className="text-4xl sm:text-5xl md:text-8xl text-transparent bg-clip-text mr-4 md:mr-10 bg-gradient-to-b from-serenya-dark to-serenya-accent dark:from-white dark:to-neutral-400 font-star tracking-wider drop-shadow-sm dark:drop-shadow-none">
                     StreamSmart
                  </h2>
              </div>
-             <p className="text-serenya-dark/60 dark:text-white/60 text-sm tracking-[0.2em] uppercase font-medium font-raleway ml-5">
+             <p className="text-serenya-dark/60 dark:text-white/60 text-[10px] md:text-sm tracking-[0.1em] md:tracking-[0.2em] uppercase font-medium font-raleway md:ml-5 px-4 text-balance">
                 Websites that work as good as they look
              </p>
           </div>

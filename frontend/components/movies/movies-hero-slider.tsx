@@ -33,7 +33,7 @@ export function MoviesHeroSlider() {
   const isTablet = windowWidth >= 640 && windowWidth < 1024;
 
   // How many cards to show on each side of center
-  const sideCount = isMobile ? 0 : isTablet ? 1 : 2;
+  const sideCount = isMobile ? 1 : isTablet ? 1 : 2;
 
   // Responsive offsets (px) and scales
   const getCardStyle = (offset: number) => {
@@ -45,11 +45,11 @@ export function MoviesHeroSlider() {
     const sign = Math.sign(offset);
 
     if (absOffset === 1) {
-      const xVal = isMobile ? 0 : isTablet ? sign * 220 : sign * 350;
+      const xVal = isMobile ? sign * 140 : isTablet ? sign * 220 : sign * 350;
       return {
         x: xVal,
-        scale: isTablet ? 0.9 : 1,
-        opacity: isMobile ? 0 : 0.9,
+        scale: isMobile ? 0.8 : isTablet ? 0.9 : 1,
+        opacity: isMobile ? 0.8 : 0.9,
         zIndex: 10,
         rotateY: sign * -15,
       };
@@ -133,12 +133,12 @@ export function MoviesHeroSlider() {
 
   // Card dimensions responsive
   const cardW = isMobile
-    ? "w-48 sm:w-56"
+    ? "w-36 sm:w-56"
     : isTablet
     ? "w-56 sm:w-64"
     : "w-64 sm:w-80";
   const cardH = isMobile
-    ? "h-72"
+    ? "h-[220px]"
     : isTablet
     ? "h-80 sm:h-[340px]"
     : "h-96 sm:h-[480px]";

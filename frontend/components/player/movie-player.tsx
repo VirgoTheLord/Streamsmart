@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { PLAYER_MIRRORS } from "@/lib/config/player-mirrors";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useFetchTVDetails } from "@/hooks/useTMDB";
+import { useFetchTVDetails, useFetchTVSeason } from "@/hooks/useTMDB";
 
 export function MoviePlayer() {
   const searchParams = useSearchParams();
@@ -25,6 +25,7 @@ export function MoviePlayer() {
   const [showEpisodeSelector, setShowEpisodeSelector] = useState(false);
 
   const { data: tvDetails } = useFetchTVDetails(type === 'tv' ? Number(movieId) : null);
+  const { data: seasonData } = useFetchTVSeason(type === 'tv' ? Number(movieId) : null, season);
 
   const [currentMirrorIndex, setCurrentMirrorIndex] = useState(0);
   const [hasError, setHasError] = useState(false);
@@ -134,17 +135,9 @@ export function MoviePlayer() {
     }
   };
 
-  const currentSeason = tvDetails?.seasons?.find((s: any) => s.season_number === season);
-  // We can't easily get episode count for current season without fetching season details separately 
-  // if fetchTVDetails only gets basic details + next episode. 
-  // However, useFetchTVDetails uses append_to_response=season/1, so we might need to fetch specific season details if user changes season.
-  // For now, let's rely on basic details or iterate if possible. 
-  // Ideally we need a hook to fetch season details when season changes.
-  
-  // Let's assume for now we just show a reasonable number or valid episodes if we had them.
-  // Without episode count, we can't restrict the episode selector easily.
-  // BUT the details usually contain season array with episode_count.
-  const episodeCount = currentSeason?.episode_count || 24; // fallback
+  // Note: we fetch detailed episodes per season instead of relying on a fallback.
+  // Season Data fetch covers this inherently with useFetchTVSeason
+  const episodes = seasonData?.episodes || [];
 
   if (!movieId) {
     return (
@@ -182,27 +175,27 @@ export function MoviePlayer() {
           showControls ? "bg-gradient-to-b from-black/70 via-transparent to-black/70 opacity-100" : "opacity-0"
         }`}
       >
-        <div className="absolute top-6 left-6 md:top-8 md:left-8 pointer-events-auto">
+        <div className="absolute top-4 left-4 md:top-8 md:left-8 pointer-events-auto">
           <button
             onClick={() => router.push(type === 'tv' ? '/series' : '/movies')}
-            className="group flex items-center justify-center w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
+            className="group flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all duration-300 hover:scale-105 active:scale-95 shadow-xl"
             title="Close Player"
           >
-            <X className="w-6 h-6 text-white group-hover:text-red-400 transition-colors" />
+            <X className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:text-red-400 transition-colors" />
           </button>
         </div>
 
-        <div className="absolute top-6 right-6 md:top-8 md:right-8 pointer-events-auto flex flex-col items-end gap-3">
+        <div className="absolute top-4 right-4 md:top-8 md:right-8 pointer-events-auto flex flex-col items-end gap-2 md:gap-3">
           {type === 'tv' && tvDetails && (
              <div className="flex gap-2">
                 {/* Season Selector */}
                 <div className="relative">
                     <button
                         onClick={() => { setShowSeasonSelector(!showSeasonSelector); setShowEpisodeSelector(false); }}
-                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all text-white font-raleway text-sm"
+                        className="flex items-center gap-1.5 md:gap-2 px-3 py-2 md:px-4 md:py-3 rounded-lg md:rounded-xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all text-white font-raleway text-xs md:text-sm"
                     >
                         <span>Season {season}</span>
-                        {showSeasonSelector ? <ChevronUp className="w-4 h-4"/> : <ChevronDown className="w-4 h-4"/>}
+                        {showSeasonSelector ? <ChevronUp className="w-3 h-3 md:w-4 md:h-4"/> : <ChevronDown className="w-3 h-3 md:w-4 md:h-4"/>}
                     </button>
                     {showSeasonSelector && (
                         <div className="absolute top-full right-0 mt-2 w-32 max-h-64 overflow-y-auto bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-1 z-50 no-scrollbar">
@@ -223,22 +216,27 @@ export function MoviePlayer() {
                  <div className="relative">
                     <button
                         onClick={() => { setShowEpisodeSelector(!showEpisodeSelector); setShowSeasonSelector(false); }}
-                         className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all text-white font-raleway text-sm"
+                         className="flex items-center gap-1.5 md:gap-2 px-3 py-2 md:px-4 md:py-3 rounded-lg md:rounded-xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all text-white font-raleway text-xs md:text-sm"
                     >
-                        <span>Episode {episode}</span>
-                        {showEpisodeSelector ? <ChevronUp className="w-4 h-4"/> : <ChevronDown className="w-4 h-4"/>}
+                        <span className="hidden sm:inline">Episode</span><span className="sm:hidden">Ep</span> <span>{episode}</span>
+                        {showEpisodeSelector ? <ChevronUp className="w-3 h-3 md:w-4 md:h-4"/> : <ChevronDown className="w-3 h-3 md:w-4 md:h-4"/>}
                     </button>
                     {showEpisodeSelector && (
                         <div className="absolute top-full right-0 mt-2 w-32 max-h-64 overflow-y-auto bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-1 z-50 no-scrollbar">
-                             {Array.from({ length: episodeCount }, (_, i) => i + 1).map((ep) => (
-                                <button
-                                    key={ep}
-                                    onClick={() => { setEpisode(ep); setShowEpisodeSelector(false); }}
-                                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${episode === ep ? "bg-serenya-primary text-white" : "text-white/70 hover:bg-white/10"}`}
-                                >
-                                    Episode {ep}
-                                </button>
-                             ))}
+                             {episodes.length > 0 ? (
+                                episodes.map((ep: any) => (
+                                    <button
+                                        key={ep.id}
+                                        onClick={() => { setEpisode(ep.episode_number); setShowEpisodeSelector(false); }}
+                                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${episode === ep.episode_number ? "bg-serenya-primary text-white" : "text-white/70 hover:bg-white/10"}`}
+                                    >
+                                        <div className="font-semibold">Episode {ep.episode_number}</div>
+                                        <div className="text-[10px] opacity-70 truncate mt-0.5">{ep.name}</div>
+                                    </button>
+                                ))
+                             ) : (
+                                <div className="text-white/50 text-xs px-3 py-2">Loading episodes...</div>
+                             )}
                         </div>
                     )}
                 </div>
@@ -248,16 +246,19 @@ export function MoviePlayer() {
           <div className="relative flex flex-col items-end">
             <button
                 onClick={() => setShowMirrorSelector(!showMirrorSelector)}
-                className="group flex items-center gap-3 px-5 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all duration-300 shadow-xl"
+                className="group flex items-center gap-2 md:gap-3 px-3 py-2 md:px-5 md:py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all duration-300 shadow-xl"
             >
-                <span className="text-white/90 font-raleway font-medium text-sm hidden md:block">
+                <span className="text-white/90 font-raleway font-medium text-xs md:text-sm hidden md:block">
                 Server: <span className="text-serenya-accent font-bold">{currentMirror.name}</span>
                 </span>
-                <Server className="w-5 h-5 text-white/90 group-hover:text-serenya-accent transition-colors" />
+                <span className="text-white/90 font-raleway font-bold text-xs md:hidden">
+                    {currentMirror.name}
+                </span>
+                <Server className="w-4 h-4 md:w-5 md:h-5 text-white/90 group-hover:text-serenya-accent transition-colors hidden md:block" />
             </button>
 
             <div 
-                className={`mt-3 w-48 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 origin-top-right -mr-2 ${
+                className={`mt-2 md:mt-3 w-40 md:w-48 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl md:rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 origin-top-right -mr-0 md:-mr-2 ${
                 showMirrorSelector ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-4 pointer-events-none"
                 }`}
             >
@@ -286,23 +287,23 @@ export function MoviePlayer() {
           </div>
         </div>
 
-        <div className="absolute bottom-6 left-6 md:bottom-10 md:left-10 pointer-events-auto max-w-2xl">
+        <div className="absolute bottom-6 left-4 right-20 md:bottom-10 md:left-10 md:right-auto pointer-events-auto max-w-2xl">
           {title && (
             <div className="space-y-1">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white backdrop-blur-sm border border-white/5 uppercase tracking-wider shadow-sm">
+              <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mb-1.5 md:mb-2 text-[9px] md:text-[10px]">
+                <span className="px-1.5 md:px-2 py-0.5 rounded font-bold bg-white/20 text-white backdrop-blur-sm border border-white/5 uppercase tracking-wider shadow-sm">
                   {type === 'tv' ? 'Series' : 'Movies'}
                 </span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-serenya-primary/80 text-white backdrop-blur-sm border border-white/5 uppercase tracking-wider shadow-sm">
+                <span className="px-1.5 md:px-2 py-0.5 rounded font-bold bg-serenya-primary/80 text-white backdrop-blur-sm border border-white/5 uppercase tracking-wider shadow-sm">
                   HD
                 </span>
                  {type === 'tv' && (
-                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-white backdrop-blur-sm border border-white/5 uppercase tracking-wider shadow-sm">
+                     <span className="px-1.5 md:px-2 py-0.5 rounded font-bold bg-white/10 text-white backdrop-blur-sm border border-white/5 uppercase tracking-wider shadow-sm truncate max-w-[120px]">
                         S{season} E{episode}
                      </span>
                  )}
               </div>
-              <h1 className="text-white font-raleway font-bold text-2xl md:text-3xl lg:text-4xl drop-shadow-2xl tracking-tight leading-none">
+              <h1 className="text-white font-raleway font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl drop-shadow-2xl tracking-tight leading-tight line-clamp-2 md:leading-none">
                 {decodeURIComponent(title)}
               </h1>
               <div className="flex items-center gap-2 text-white/60 font-raleway text-sm mt-3">
@@ -318,7 +319,7 @@ export function MoviePlayer() {
           )}
         </div>
 
-        <div className="absolute bottom-6 right-6 md:bottom-10 md:right-10 pointer-events-auto">
+        <div className="absolute bottom-6 right-4 md:bottom-10 md:right-10 pointer-events-auto">
              <button
                 onClick={() => {
                     const iframe = iframeRef.current;
