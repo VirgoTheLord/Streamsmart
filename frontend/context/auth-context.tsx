@@ -2,65 +2,86 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
 interface User {
+  _id: string;
   name: string;
   email: string;
-  initials: string;
 }
 
 interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
-  login: (email: string, name?: string) => void;
-  logout: () => void;
+  isLoading: boolean;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isLoggedIn: false,
   user: null,
-  login: () => {},
-  logout: () => {},
+  isLoading: true,
+  register: async () => {},
+  login: async () => {},
+  logout: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Persist auth state
+  // Hydrate session from cookie on mount
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("ss_auth");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setIsLoggedIn(true);
-        setUser(parsed);
-      }
-    } catch {}
+    fetch(`${API_URL}/api/auth/me`, { credentials: "include" })
+      .then(async (res) => {
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+        }
+      })
+      .catch(() => {/* API unreachable — stay logged out */})
+      .finally(() => setIsLoading(false));
   }, []);
 
-  const login = (email: string, name?: string) => {
-    const displayName = name || email.split("@")[0];
-    const initials = displayName
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-
-    const userData: User = { name: displayName, email, initials };
-    setIsLoggedIn(true);
-    setUser(userData);
-    localStorage.setItem("ss_auth", JSON.stringify(userData));
+  const register = async (name: string, email: string, password: string) => {
+    const res = await fetch(`${API_URL}/api/auth/register`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message ?? "Registration failed");
+    setUser(data.user);
   };
 
-  const logout = () => {
-    setIsLoggedIn(false);
+  const login = async (email: string, password: string) => {
+    const res = await fetch(`${API_URL}/api/auth/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message ?? "Login failed");
+    setUser(data.user);
+  };
+
+  const logout = async () => {
+    await fetch(`${API_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
     setUser(null);
-    localStorage.removeItem("ss_auth");
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn: !!user, user, isLoading, register, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
