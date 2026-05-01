@@ -1,7 +1,3 @@
-import Link from "next/link";
-import { Twitter, Instagram, Globe } from "lucide-react";
-
-
 export function FloatingFooter() {
   return (
     <div className="flex justify-center w-full px-4 pb-8 pt-5">
@@ -20,23 +16,9 @@ export function FloatingFooter() {
 
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-serenya-accent/5 dark:bg-serenya-dark/5 blur-[100px] rounded-full pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between py-12 px-6 md:py-16 md:px-12 gap-10 md:gap-4 h-full min-h-[250px]">
-          
+        <div className="relative z-10 flex flex-col items-center justify-center py-12 px-6 md:py-16 md:px-12 gap-6 h-full min-h-[200px]">
 
-          <div className="flex flex-col items-center md:items-start justify-between gap-6 flex-1 order-2 md:order-1">
-             <div className="flex flex-col gap-3 flex-1 justify-center">
-               <Link href="#" className="hover:text-serenya-primary dark:hover:text-white hover:scale-110 transition-all text-neutral-500 dark:text-white">
-                  <Globe className="w-5 h-5" />
-               </Link>
-               <Link href="#" className="hover:text-serenya-primary dark:hover:text-white hover:scale-110 transition-all text-neutral-500 dark:text-white">
-                  <Twitter className="w-5 h-5" />
-               </Link>
-             </div>
-             <p className="text-neutral-500 dark:text-white/60 text-xs font-medium font-raleway">© 2026 StreamSmart.<br /> All rights reserved.</p>
-          </div>
-
-
-          <div className="flex flex-col items-center justify-center flex-[2] text-center order-1 md:order-2">
+          <div className="flex flex-col items-center justify-center text-center">
              <div className="flex items-center justify-center gap-3 md:gap-5 mb-2 md:mb-4 group cursor-default">
 
                  <div className="relative w-10 h-10 md:w-14 md:h-14">
@@ -53,16 +35,7 @@ export function FloatingFooter() {
              </p>
           </div>
 
-
-          <div className="flex flex-col items-center md:items-end justify-between flex-1 text-sm text-neutral-500 dark:text-white order-3">
-             <div className="flex flex-col items-center md:items-end gap-2 font-raleway font-medium flex-1 justify-center">
-                <Link href="#" className="hover:text-white dark:hover:text-white/80 transition-colors hover:underline decoration-serenya-accent underline-offset-4">Privacy Policy</Link>
-                <Link href="#" className="hover:text-white dark:hover:text-white/80 transition-colors hover:underline decoration-serenya-accent underline-offset-4">Terms of Service</Link>
-             </div>
-             <a href="mailto:hello@streamsmart.com" className="mt-4 font-raleway text-xs tracking-wider hover:text-white dark:hover:text-white transition-colors">
-                hello@streamsmart.com
-             </a>
-          </div>
+          <p className="text-neutral-500 dark:text-white/60 text-xs font-medium font-raleway">© 2026 StreamSmart. All rights reserved.</p>
 
         </div>
       </div>

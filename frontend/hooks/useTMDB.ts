@@ -375,14 +375,14 @@ export function useAISearch() {
     query: '',
   });
 
-  const search = useCallback(async (query: string) => {
+  const search = useCallback(async (query: string, options?: { genre?: string }) => {
     if (!query.trim()) return;
 
     setState(prev => ({ ...prev, loading: true, error: null, query }));
 
     try {
       // 1. Call StreamSmart retrieval backend
-      const ssResponse = await searchStreamsmart(query);
+      const ssResponse = await searchStreamsmart(query, options);
 
       // 2. If the query is not movie-related, notify and bail out
       if (ssResponse.intent_passable === false) {

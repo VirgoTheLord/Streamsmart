@@ -13,14 +13,20 @@ export interface StreamSmartResultMetadata {
 export interface ScoreBreakdown {
   semantic_weight: number;
   cluster_weight: number;
+  temporal_weight?: number;
+  actor_weight?: number;
   note?: string;
 }
 
 export interface StreamSmartExplanation {
-  actor_constraint?: string;
+  actor_constraint?: string | null;
+  actor_confidence?: number | null;
+  year_constraint?: string | null;
+  temporal_fuzzy?: string | null;
+  centroid_actors_applied?: string | null;
   semantic_components?: string[];
   soft_constraints?: Record<string, { matched_phrase: string; confidence: number }>;
-  filters_applied?: null | string;
+  filters_applied?: string | null;
   weighted_score?: number;
   score_breakdown?: ScoreBreakdown;
 }
@@ -31,6 +37,9 @@ export interface StreamSmartResult {
   score: number;
   metadata: StreamSmartResultMetadata;
   explanation?: StreamSmartExplanation;
+  slm_reasoning?: string;
+  slm_confidence?: number;
+  deterministic_score?: number;
 }
 
 export interface ParsedIntentConstraint {
@@ -38,11 +47,28 @@ export interface ParsedIntentConstraint {
   confidence?: number;
 }
 
+export interface ParsedIntentYear {
+  year_from?: number | null;
+  year_to?: number | null;
+}
+
+export interface ParsedIntentHardConstraints {
+  actors?: string[];
+  actor_confidence?: Record<string, number>;
+  year?: ParsedIntentYear;
+}
+
+export interface ParsedIntentFilters {
+  allow_adult?: boolean;
+}
+
 export interface ParsedIntent {
   intent_type?: string;
-  hard_constraints?: Record<string, string | string[]>;
+  hard_constraints?: ParsedIntentHardConstraints;
   soft_constraints?: Record<string, ParsedIntentConstraint>;
   inferred_signals?: Record<string, ParsedIntentConstraint>;
+  fuzzy_constraints?: Record<string, unknown>;
+  filters?: ParsedIntentFilters;
   confidence?: number;
   original_query?: string;
 }

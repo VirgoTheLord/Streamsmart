@@ -1,15 +1,30 @@
 "use client";
 
-import React, { useState, useRef, KeyboardEvent } from "react";
+import React, { useState, useEffect, useRef, KeyboardEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DiagonalLink } from "@/components/ui/diagonal-link";
-import { Search, Paperclip, Mic, ArrowRight, ChevronRight } from "lucide-react";
+import { Search, Paperclip, Mic, ArrowRight, ChevronRight, ShieldOff, ShieldCheck } from "lucide-react";
 
 export function HeroLeftSection() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [query, setQuery] = useState("");
+  const [safeMode, setSafeMode] = useState(true);
+
+  // Persist safe mode preference in localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('streamsmart_safe_mode');
+    if (stored !== null) setSafeMode(stored === 'true');
+  }, []);
+
+  const toggleSafeMode = () => {
+    setSafeMode(prev => {
+      const next = !prev;
+      localStorage.setItem('streamsmart_safe_mode', String(next));
+      return next;
+    });
+  };
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -98,6 +113,24 @@ export function HeroLeftSection() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Safe Mode / 18+ Toggle */}
+                    <button
+                      type="button"
+                      onClick={toggleSafeMode}
+                      className={`relative z-[100] flex items-center gap-1.5 sm:gap-2 rounded-full border h-8 sm:h-9 px-3 sm:px-4 transition-all cursor-pointer text-xs sm:text-sm font-medium font-raleway ${
+                        safeMode
+                          ? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 dark:border-emerald-400/30 dark:bg-emerald-500/10 hover:bg-emerald-500/20 dark:hover:bg-emerald-500/20'
+                          : 'border-red-400/40 bg-red-500/10 text-red-600 dark:text-red-400 dark:border-red-400/30 dark:bg-red-500/10 hover:bg-red-500/20 dark:hover:bg-red-500/20'
+                      }`}
+                    >
+                      {safeMode ? (
+                        <ShieldCheck className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                      ) : (
+                        <ShieldOff className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                      )}
+                      <span>{safeMode ? 'Safe' : '18+'}</span>
+                    </button>
                   </div>
 
                   <div className="flex items-center gap-1 sm:gap-2">
