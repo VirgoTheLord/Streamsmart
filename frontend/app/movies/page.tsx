@@ -33,8 +33,18 @@ function MoviesPageInner() {
   const [selectedSeriesId, setSelectedSeriesId] = useState<number | null>(null);
   const [selectedAnimeId, setSelectedAnimeId] = useState<number | null>(null);
 
+  // Read safe mode preference from localStorage (set by hero search bar toggle)
+  const [safeMode, setSafeMode] = useState(true);
+  useEffect(() => {
+    const stored = localStorage.getItem('streamsmart_safe_mode');
+    if (stored !== null) setSafeMode(stored === 'true');
+  }, []);
+
   // --- AI Search ---
   const { movies: aiMovies, loading: aiLoading, error: aiError, parsedIntent, query: aiQuery, search: runAISearch, reset: resetAI } = useAISearch();
+
+  // Client-side filter: hide adult content when safeMode is on
+  const filteredAIMovies = safeMode ? aiMovies.filter(m => !m.adult) : aiMovies;
 
   // Trigger AI search when URL param changes
   useEffect(() => {
@@ -183,9 +193,9 @@ function MoviesPageInner() {
                     : aiError}
                 </p>
               </div>
-            ) : aiMovies.length > 0 ? (
+            ) : filteredAIMovies.length > 0 ? (
               <DraggableScroll className="gap-2 md:gap-4 py-4 -mx-4 md:-mx-8 pr-4 md:pr-8 pl-[max(2rem,calc(50vw-40rem))] md:pl-[max(3rem,calc(50vw-40rem))]">
-                {aiMovies.map((movie: any) => (
+                {filteredAIMovies.map((movie: any) => (
                   <div key={movie.id} className="w-[140px] sm:w-[160px] md:w-[200px] lg:w-[240px] flex-shrink-0 select-none text-left">
                     <MovieCard movie={movie} onClick={() => setSelectedMovieId(movie.id)} />
                   </div>

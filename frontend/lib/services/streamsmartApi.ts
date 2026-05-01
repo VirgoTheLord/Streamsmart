@@ -8,10 +8,10 @@ const STREAMSMART_BASE_URL = "http://10.171.120.41:8080";
  */
 export async function searchStreamsmart(
   query: string,
-  genre?: string
+  options?: { genre?: string }
 ): Promise<StreamSmartResponse> {
   const payload: Record<string, unknown> = { query, use_slm: false };
-  if (genre) payload.genre = genre;
+  if (options?.genre) payload.genre = options.genre;
 
   const response = await fetch(`${STREAMSMART_BASE_URL}/retrieve/core`, {
     method: "POST",
