@@ -375,10 +375,10 @@ export function useAISearch() {
     query: '',
   });
 
-  const search = useCallback(async (query: string, options?: { genre?: string }) => {
+  const search = useCallback(async (query: string, options?: { genre?: string; useSlm?: boolean }) => {
     if (!query.trim()) return;
 
-    setState(prev => ({ ...prev, loading: true, error: null, query }));
+    setState({ movies: [], loading: true, error: null, parsedIntent: null, query });
 
     try {
       // 1. Call StreamSmart retrieval backend

@@ -5,23 +5,34 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DiagonalLink } from "@/components/ui/diagonal-link";
-import { Search, Paperclip, Mic, ArrowRight, ChevronRight, ShieldOff, ShieldCheck } from "lucide-react";
+import { Search, Paperclip, Mic, ArrowRight, ChevronRight, ShieldOff, ShieldCheck, BrainCircuit } from "lucide-react";
 
 export function HeroLeftSection() {
   const [showTooltip, setShowTooltip] = useState(false);
   const [query, setQuery] = useState("");
   const [safeMode, setSafeMode] = useState(true);
+  const [useSlm, setUseSlm] = useState(false);
 
-  // Persist safe mode preference in localStorage
+  // Persist preferences in localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('streamsmart_safe_mode');
-    if (stored !== null) setSafeMode(stored === 'true');
+    const storedSafe = localStorage.getItem('streamsmart_safe_mode');
+    if (storedSafe !== null) setSafeMode(storedSafe === 'true');
+    const storedSlm = localStorage.getItem('streamsmart_use_slm');
+    if (storedSlm !== null) setUseSlm(storedSlm === 'true');
   }, []);
 
   const toggleSafeMode = () => {
     setSafeMode(prev => {
       const next = !prev;
       localStorage.setItem('streamsmart_safe_mode', String(next));
+      return next;
+    });
+  };
+
+  const toggleSlm = () => {
+    setUseSlm(prev => {
+      const next = !prev;
+      localStorage.setItem('streamsmart_use_slm', String(next));
       return next;
     });
   };
@@ -130,6 +141,20 @@ export function HeroLeftSection() {
                         <ShieldOff className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                       )}
                       <span>{safeMode ? 'Safe' : '18+'}</span>
+                    </button>
+
+                    {/* Reason Mode Toggle */}
+                    <button
+                      type="button"
+                      onClick={toggleSlm}
+                      className={`relative z-[100] flex items-center gap-1.5 sm:gap-2 rounded-full border h-8 sm:h-9 px-3 sm:px-4 transition-all cursor-pointer text-xs sm:text-sm font-medium font-raleway ${
+                        useSlm
+                          ? 'border-purple-400/40 bg-purple-500/10 text-purple-600 dark:text-purple-400 dark:border-purple-400/30 dark:bg-purple-500/10 hover:bg-purple-500/20 dark:hover:bg-purple-500/20'
+                          : 'border-serenya-dark/20 bg-white/50 text-serenya-dark/80 dark:border-white/20 dark:bg-white/10 dark:text-white/80 hover:bg-white/80 dark:hover:bg-white/20'
+                      }`}
+                    >
+                      <BrainCircuit className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+                      <span>{useSlm ? 'Reason' : 'Fast'}</span>
                     </button>
                   </div>
 

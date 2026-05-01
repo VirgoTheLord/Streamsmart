@@ -33,11 +33,16 @@ function MoviesPageInner() {
   const [selectedSeriesId, setSelectedSeriesId] = useState<number | null>(null);
   const [selectedAnimeId, setSelectedAnimeId] = useState<number | null>(null);
 
-  // Read safe mode preference from localStorage (set by hero search bar toggle)
+  // Read preferences from localStorage (set by hero search bar toggles)
   const [safeMode, setSafeMode] = useState(true);
+  const [useSlm, setUseSlm] = useState(false);
+  const [prefsLoaded, setPrefsLoaded] = useState(false);
   useEffect(() => {
-    const stored = localStorage.getItem('streamsmart_safe_mode');
-    if (stored !== null) setSafeMode(stored === 'true');
+    const storedSafe = localStorage.getItem('streamsmart_safe_mode');
+    if (storedSafe !== null) setSafeMode(storedSafe === 'true');
+    const storedSlm = localStorage.getItem('streamsmart_use_slm');
+    if (storedSlm !== null) setUseSlm(storedSlm === 'true');
+    setPrefsLoaded(true);
   }, []);
 
   // --- AI Search ---
@@ -46,15 +51,16 @@ function MoviesPageInner() {
   // Client-side filter: hide adult content when safeMode is on
   const filteredAIMovies = safeMode ? aiMovies.filter(m => !m.adult) : aiMovies;
 
-  // Trigger AI search when URL param changes
+  // Trigger AI search only after prefs are loaded (prevents double-fire)
   useEffect(() => {
+    if (!prefsLoaded) return;
     if (aiQueryParam) {
-      runAISearch(aiQueryParam);
+      runAISearch(aiQueryParam, { useSlm });
     } else {
       resetAI();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aiQueryParam]);
+  }, [aiQueryParam, useSlm, prefsLoaded]);
 
   // --- Standard TMDB fetching ---
   const { data: trendingData, loading: trendingLoading } = useFetchMovies("/trending/movie/week", 1);
