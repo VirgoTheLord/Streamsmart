@@ -19,7 +19,7 @@ export const config = {
     expiresIn: process.env.JWT_EXPIRES_IN ?? "7d",
   },
   cookie: {
-    domain: process.env.COOKIE_DOMAIN ?? "localhost",
+    domain: process.env.COOKIE_DOMAIN || undefined,
     secure: process.env.NODE_ENV === "production",
     sameSite: (process.env.NODE_ENV === "production" ? "none" : "lax") as
       | "none"
