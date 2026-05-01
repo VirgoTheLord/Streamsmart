@@ -9,6 +9,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
+  initials: string;
 }
 
 interface AuthContextType {
@@ -33,13 +34,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const formatUser = (u: any): User | null => {
+    if (!u) return null;
+    const initials = (u.name || "U")
+      .split(" ")
+      .map((n: string) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+    return { ...u, initials };
+  };
+
   // Hydrate session from cookie on mount
   useEffect(() => {
     fetch(`${API_URL}/api/auth/me`, { credentials: "include" })
       .then(async (res) => {
         if (res.ok) {
           const data = await res.json();
-          setUser(data.user);
+          setUser(formatUser(data.user));
         }
       })
       .catch(() => {/* API unreachable — stay logged out */})
@@ -55,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message ?? "Registration failed");
-    setUser(data.user);
+    setUser(formatUser(data.user));
   };
 
   const login = async (email: string, password: string) => {
@@ -67,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.message ?? "Login failed");
-    setUser(data.user);
+    setUser(formatUser(data.user));
   };
 
   const logout = async () => {
